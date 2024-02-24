@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mg1", "mg1\mg1.vcxproj", "{F2398732-C6D8-4831-B831-97EE6FC28F47}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "external", "external", "{6C3E0DC8-40AD-4E0D-A844-E3995CD86979}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "external\imgui\imgui.vcxproj", "{41703C86-23EE-4958-A3D6-1D00D8066769}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F2398732-C6D8-4831-B831-97EE6FC28F47}.Debug|x64.ActiveCfg = Debug|x64
+		{F2398732-C6D8-4831-B831-97EE6FC28F47}.Debug|x64.Build.0 = Debug|x64
+		{41703C86-23EE-4958-A3D6-1D00D8066769}.Debug|x64.ActiveCfg = Debug|x64
+		{41703C86-23EE-4958-A3D6-1D00D8066769}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{41703C86-23EE-4958-A3D6-1D00D8066769} = {6C3E0DC8-40AD-4E0D-A844-E3995CD86979}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4C67D907-8EB6-4C56-AE55-FEE7097F740F}
+	EndGlobalSection
+EndGlobal
