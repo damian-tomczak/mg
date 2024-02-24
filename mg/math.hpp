@@ -5,7 +5,13 @@ struct Vec4
 {
     float x, y, z, w;
 
-    Vec4(float x = 0.f, float y = 0.f, float z = 0.f, float w = 0.f) : x(x), y(y), z(z), w(w) {}
+    auto operator<=>(const Vec4& other) const = default;
+
+    Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w)
+    {}
+
+    Vec4(float value) : x(value), y(value), z(value), w(value)
+    {}
 
     Vec4 operator+(const Vec4& rhs) const
     {
@@ -43,7 +49,12 @@ struct Vec3
 {
     float x, y, z;
 
-    Vec3(float x = 0.f, float y = 0.f, float z = 0.f) : x(x), y(y), z(z)
+    auto operator<=>(const Vec3& other) const = default;
+
+    Vec3(float x, float y, float z) : x(x), y(y), z(z)
+    {}
+
+    Vec3(float value) : x(value), y(value), z(value)
     {}
 
     Vec3 operator+(const Vec3& rhs) const

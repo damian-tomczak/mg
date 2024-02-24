@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cassert>
+#include <iostream>
+#include <fstream>
+
 #include "math.hpp"
 
 inline float elipsoidZ(float x, float y, float a, float b, float c)
@@ -32,21 +35,29 @@ inline float partialZPartialY(float x, float y, float a, float b, float c)
     return numerator / denominator;
 }
 
-inline float gradientMagnitude(float x, float y, float a, float b, float c)
+inline float gradientMagnitude(float x, float y, float z, float a, float b, float c)
 {
     float dx = partialZPartialX(x, y, a, b, c);
     float dy = partialZPartialY(x, y, a, b, c);
 
-    return sqrt(dx * dx + dy * dy);
+    return sqrt(dx * dx + dy * dy + z * z);
 }
 
-inline Vec3 normalVector(float x, float y, float a, float b, float c)
+inline Vec3 normalVector(float x, float y, float z, float a, float b, float c)
 {
     float dx = partialZPartialX(x, y, a, b, c);
     float dy = partialZPartialY(x, y, a, b, c);
-    float mag = gradientMagnitude(x, y, a, b, c);
+    float mag = gradientMagnitude(x, y, z, a, b, c);
 
-    //assert(mag != 0);
+
+    //if (mag == 0)
+    //{
+    //    std::fstream f;
+    //    f.open("out.txt", std::ios::out | std::ios::app);
+    //    f << x << " " << y << "\n";
+    //    f.close();
+
+    //}
 
     float nx = dx / mag;
     float ny = dy / mag;

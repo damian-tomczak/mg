@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
         Vec3 ambientColor = lightColor * ambientStrength;
 
         Vec3 diffuseColor = lightColor;
-        Vec3 specularColor = lightColor;
+        Vec3 specularColor = Vec3(1.f);
 
         Vec3 viewPos = lightPos;
 
@@ -113,31 +113,28 @@ int main(int argc, char* argv[])
             {
                 float normalizedX = (static_cast<float>(x) / windowWidth - 0.5f) * scale;
                 float normalizedY = (0.5f - static_cast<float>(y) / windowHeight) * scale;
-                Vec4 color{255.0f, 0.f, 0.f, 255.f};
+                Vec4 color{0.0f, 0.0f, 0.0f, 1.0f};
 
                 float z = elipsoidZ(normalizedX, normalizedY, a, b, c);
                 if (!std::isnan(z))
                 {
-                    Vec3 point = {normalizedX, normalizedY};
-                    Vec3 normal = normalVector(point.x, point.y, a, b, c);
+                    Vec3 point = {normalizedX, normalizedY, 0.f};
+                    Vec3 normal = normalVector(point.x, point.y, point.z, a, b, c);
 
-                    // Ambient component
                     Vec3 ambient = ambientColor;
 
-                    // Diffuse component
                     Vec3 lightDir = normalize(lightPos - point);
-                    float diff = std::max(dot(normal, lightDir), 0.0f);
+                    float diff = std::min(pow(std::max(dot(normal, lightDir), 0.f), m), 1.f);
                     Vec3 diffuse = diff * diffuseColor * lightColor;
 
-                    // Specular component
                     Vec3 viewDir = normalize(viewPos - point);
                     Vec3 reflectDir = reflect(-lightDir, normal);
-                    float spec = pow(std::max(dot(viewDir, reflectDir), 0.f), m);
+                    float spec = std::max(dot(viewDir, reflectDir), 0.f);
                     Vec3 specular = spec * specularColor * lightColor;
 
-                    // Combine results
-                    Vec3 finalColor = ambient + diffuse + specular;
-                    color = Vec4(finalColor.x, finalColor.y, finalColor.z, 1.0f);
+                    Vec3 finalColor = normal;
+
+                    color = Vec4(finalColor.x, finalColor.y, finalColor.z, 1.f);
                 }
 
                 upixels[y * windowWidth + x] = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888),
