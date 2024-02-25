@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 
         Vec3 lightPos{0.0f, 0.0f, 10.0f};
         Vec3 lightColor{1.0f, 1.0f, 0.0f};
-        float ambientStrength = 0.1f;
+        float ambientStrength = 0.5f;
         Vec3 ambientColor = lightColor * ambientStrength;
 
         Vec3 diffuseColor = lightColor;
@@ -133,11 +133,11 @@ int main(int argc, char* argv[])
                     float spec = pow(std::max(dot(viewDir, reflectDir), 0.f), m);
                     Vec3 specular = spec * specularColor;
 
-                    Vec3 finalColor = normal;
+                    Vec3 finalColor = ambient + diffuse + specular;
 
-                    finalColor.x = std::clamp(pow(finalColor.x, m), 0.f, 1.f);
-                    finalColor.y = std::clamp(pow(finalColor.y, m), 0.f, 1.f);
-                    finalColor.z = std::clamp(pow(finalColor.z, m), 0.f, 1.f);
+                    finalColor.x = std::clamp(finalColor.x, 0.f, 1.f);
+                    finalColor.y = std::clamp(finalColor.y, 0.f, 1.f);
+                    finalColor.z = std::clamp(finalColor.z, 0.f, 1.f);
 
                     color = Vec4{finalColor.x, finalColor.y, finalColor.z, 1.f};
                 }
