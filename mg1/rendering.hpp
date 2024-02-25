@@ -57,28 +57,6 @@ inline void calculateFragment(int startX, int startY, int endX, int endY, Uint32
                 static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
         }
     }
-
-    //int borderThickness = 1;
-
-    //Uint32 borderColor = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888), 255, 255, 255, 255); // Red, as an example
-
-    //for (int y = startY; y < endY; ++y)
-    //{
-    //    for (int x = startX; x < endX; ++x)
-    //    {
-    //        if (x < startX + borderThickness || x >= endX - borderThickness ||
-    //            y < startY + borderThickness || y >= endY - borderThickness)
-    //        {
-    //            upixels[y * windowWidth + x] = borderColor;
-    //        }
-    //        else
-    //        {
-    //            upixels[y * windowWidth + x] = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888),
-    //                static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255),
-    //                static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
-    //        }
-    //    }
-    //}
 }
 
 inline void processFragments(int startX, int startY, int fragmentWidth, int fragmentHeight, int accuracy, Uint32* upixels)

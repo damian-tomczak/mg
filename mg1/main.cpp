@@ -22,8 +22,6 @@ int main(int argc, char* argv[])
 
     ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    int accuracy = defaultAccuracy;
-
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, windowWidth, windowHeight);
     Uint32* upixels;
     int pitch;
@@ -57,12 +55,15 @@ int main(int argc, char* argv[])
 
         ImGui::Render();
 
-        if (checkIfGlobalsChanged())
+        bool globalsChanged = checkIfGlobalsChanged();
+
+        if (globalsChanged || (accuracy > minFragmentSize))
         {
-            accuracy = defaultAccuracy;
-        }
-        else if (accuracy > minFragmentSize)
-        {
+            if (globalsChanged)
+            {
+                accuracy = startingAccuracy;
+            }
+
             SDL_LockTexture(texture, NULL, reinterpret_cast<void**>(&upixels), &pitch);
 
             processFragments(0, 0, windowWidth, windowHeight, accuracy, upixels);

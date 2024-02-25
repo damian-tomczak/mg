@@ -7,13 +7,13 @@
 
 bool checkIfGlobalsChanged()
 {
-    static PreviousValues prev = { a, b, c, scale, m, accuracy };
+    static PreviousValues prev = { a, b, c, scale, m, startingAccuracy };
 
     bool changed = false;
 
     if (std::fabs(a - prev.a) > floatDiff || std::fabs(b - prev.b) > floatDiff ||
         std::fabs(c - prev.c) > floatDiff || std::fabs(scale - prev.scale) > floatDiff ||
-        std::fabs(m - prev.m) > floatDiff || accuracy != prev.accuracy)
+        std::fabs(m - prev.m) > floatDiff || startingAccuracy != prev.accuracy)
     {
         changed = true;
     }
@@ -23,7 +23,7 @@ bool checkIfGlobalsChanged()
     prev.c = c;
     prev.scale = scale;
     prev.m = m;
-    prev.accuracy = accuracy;
+    prev.accuracy = startingAccuracy;
 
     return changed;
 }
@@ -51,7 +51,7 @@ void renderMenu()
         ImGui::Spacing();
 
         ImGui::SliderFloat("m", &m, 0.1f, 10.0f);
-        ImGui::SliderInt("accuracy", &accuracy, 1, 128);
+        ImGui::SliderInt("startingAccuracy", &startingAccuracy, 1, 128);
     }
     ImGui::End();
 }

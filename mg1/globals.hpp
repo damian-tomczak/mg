@@ -7,11 +7,11 @@ inline bool debug = false;
 inline int windowWidth = 1280;
 inline int windowHeight = 720;
 
-inline int defaultAccuracy = 128;
 inline int minFragmentSize = 1;
 
 inline float a = 0.5f, b = 1.0f, c = 1.5f, scale = 3.0f, m = 4.0f;
-inline int accuracy = defaultAccuracy;
+inline int startingAccuracy = 128;
+inline int accuracy = startingAccuracy;
 
 inline constexpr float floatDiff = 0.0001f;
 
