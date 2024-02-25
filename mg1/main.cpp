@@ -31,10 +31,31 @@ void renderMenu()
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::SliderFloat("m", &m, 0.0f, 10.0f);
+        ImGui::SliderFloat("m", &m, 0.1f, 10.0f);
         ImGui::SliderInt("accuracy", &accuracy, 1, 20);
     }
     ImGui::End();
+}
+
+void calculateFragment(int startX, int startY, int endX, int endY)
+{
+}
+
+void processFragments(int startX, int startY, int fragmentWidth, int fragmentHeight, int minFragmentSize)
+{
+    if (fragmentWidth <= minFragmentSize || fragmentHeight <= minFragmentSize)
+    {
+        calculateFragment(startX, startY, startX + fragmentWidth, startY + fragmentHeight);
+        return;
+    }
+
+    int halfWidth = fragmentWidth / 2;
+    int halfHeight = fragmentHeight / 2;
+
+    processFragments(startX, startY, halfWidth, halfHeight, minFragmentSize);
+    processFragments(startX + halfWidth, startY, halfWidth, halfHeight, minFragmentSize);
+    processFragments(startX, startY + halfHeight, halfWidth, halfHeight, minFragmentSize);
+    processFragments(startX + halfWidth, startY + halfHeight, halfWidth, halfHeight, minFragmentSize);
 }
 
 int main(int argc, char* argv[])
@@ -60,8 +81,6 @@ int main(int argc, char* argv[])
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
 
-    bool show_demo_window = true;
-    bool show_another_window = false;
     ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     bool end = false;
@@ -93,7 +112,7 @@ int main(int argc, char* argv[])
 
         ImGui::Render();
 
-        SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 1280, 720);
+        SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, windowWidth, windowHeight);
         Uint32* upixels;
         int pitch;
         SDL_LockTexture(texture, NULL, reinterpret_cast<void**>(&upixels), &pitch);
@@ -146,7 +165,6 @@ int main(int argc, char* argv[])
                     static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255), static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
             }
         }
-
 
         SDL_UnlockTexture(texture);
         SDL_RenderCopy(renderer, texture, nullptr, nullptr);
