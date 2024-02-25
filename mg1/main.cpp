@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, windowWidth, windowHeight);
-    Uint32* upixels;
+    Uint32* pixels;
     int pitch;
 
     bool end = false;
@@ -59,14 +59,17 @@ int main(int argc, char* argv[])
 
         if (globalsChanged || (accuracy > minFragmentSize))
         {
+            SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
+
             if (globalsChanged)
             {
                 accuracy = startingAccuracy;
+
+                int totalBytes = pitch * windowHeight;
+                memset(pixels, 0, totalBytes);
             }
 
-            SDL_LockTexture(texture, NULL, reinterpret_cast<void**>(&upixels), &pitch);
-
-            processFragments(0, 0, windowWidth, windowHeight, accuracy, upixels);
+            processFragments(0, 0, windowWidth, windowHeight, accuracy, pixels);
 
             SDL_UnlockTexture(texture);
 

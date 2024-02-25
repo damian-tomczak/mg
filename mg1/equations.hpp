@@ -6,13 +6,14 @@
 
 #include "math.hpp"
 
-inline float elipsoidZ(float x, float y, float a, float b, float c)
+inline float elipsoidZ(float x, float y, float tx, float ty, float tz, float a, float b, float c)
 {
-    assert(c != 0);
+    double discriminant = sqrt(c * (-a * tx * tx + 2 * a * tx * x - a * x * x - b * ty * ty + 2 * b * ty * y - b * y * y + 1));
 
-    float zSquared = -(a * x * x + b * y * y + -1 * 1 * 1) / c;
+    double z1 = (c * tz - discriminant) / c;
+    double z2 = (c * tz + discriminant) / c;
 
-    return sqrt(zSquared);
+    return z2;
 }
 
 inline float partialZPartialX(float x, float y, float a, float b, float c)
