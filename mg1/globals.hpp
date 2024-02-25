@@ -9,7 +9,7 @@ inline int windowHeight = 720;
 
 inline int minFragmentSize = 1;
 
-inline float a = 0.5f, b = 1.0f, c = 1.5f, scale = 3.0f, m = 4.0f;
+inline float a = 0.5f, b = 1.0f, c = 1.5f, scaleObj = 3.0f, m = 4.0f;
 inline int startingAccuracy = 128;
 inline int accuracy = startingAccuracy;
 
@@ -27,6 +27,8 @@ inline Vec3 viewPos = lightPos;
 
 struct PreviousValues
 {
-    float a, b, c, scale, m;
+    float a, b, c, scaleObj, m;
     int accuracy;
 };
+
+bool isUIclicked = false;

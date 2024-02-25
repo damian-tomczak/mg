@@ -5,14 +5,16 @@
 #include "imgui_impl_sdlrenderer2.h"
 #include "globals.hpp"
 
+#include <iostream>
+
 bool checkIfGlobalsChanged()
 {
-    static PreviousValues prev = { a, b, c, scale, m, startingAccuracy };
+    static PreviousValues prev = { a, b, c, scaleObj, m, startingAccuracy };
 
     bool changed = false;
 
     if (std::fabs(a - prev.a) > floatDiff || std::fabs(b - prev.b) > floatDiff ||
-        std::fabs(c - prev.c) > floatDiff || std::fabs(scale - prev.scale) > floatDiff ||
+        std::fabs(c - prev.c) > floatDiff || std::fabs(scaleObj - prev.scaleObj) > floatDiff ||
         std::fabs(m - prev.m) > floatDiff || startingAccuracy != prev.accuracy)
     {
         changed = true;
@@ -21,7 +23,7 @@ bool checkIfGlobalsChanged()
     prev.a = a;
     prev.b = b;
     prev.c = c;
-    prev.scale = scale;
+    prev.scaleObj = scaleObj;
     prev.m = m;
     prev.accuracy = startingAccuracy;
 
@@ -41,17 +43,19 @@ void renderMenu()
     {
         ImGui::Text("Adjust Values");
 
-        ImGui::SliderFloat("a", &a, 0.0f, 10.0f);
-        ImGui::SliderFloat("b", &b, 0.0f, 10.0f);
-        ImGui::SliderFloat("c", &c, 0.1f, 10.0f);
-        ImGui::SliderFloat("scale", &scale, 0.0f, 10.0f);
+        isUIclicked = ImGui::SliderFloat("a", &a, 0.0f, 10.0f);
+        isUIclicked = ImGui::SliderFloat("b", &b, 0.0f, 10.0f);
+        isUIclicked = ImGui::SliderFloat("c", &c, 0.1f, 10.0f);
+        isUIclicked = ImGui::SliderFloat("scaleObj", &scaleObj, 0.0f, 10.0f);
 
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::SliderFloat("m", &m, 0.1f, 10.0f);
-        ImGui::SliderInt("startingAccuracy", &startingAccuracy, 1, 128);
+        isUIclicked = ImGui::SliderFloat("m", &m, 0.1f, 10.0f);
+        isUIclicked = ImGui::SliderInt("accuracy", &startingAccuracy, 1, 128);
+
+        std::cout << std::boolalpha << isUIclicked << "\n";
     }
     ImGui::End();
 }

@@ -9,8 +9,8 @@
 
 inline Vec4 computeColorAtCenter(int centerX, int centerY)
 {
-    float normalizedX = (static_cast<float>(centerX) / windowWidth - 0.5f) * scale;
-    float normalizedY = (0.5f - static_cast<float>(centerY) / windowHeight) * scale;
+    float normalizedX = (static_cast<float>(centerX) / windowWidth - 0.5f) * scaleObj;
+    float normalizedY = (0.5f - static_cast<float>(centerY) / windowHeight) * scaleObj;
 
     float z = elipsoidZ(normalizedX, normalizedY, a, b, c);
     if (std::isnan(z))
@@ -18,7 +18,7 @@ inline Vec4 computeColorAtCenter(int centerX, int centerY)
         return Vec4{0.0f, 0.0f, 0.0f, 1.0f};
     }
 
-    Vec3 point = { normalizedX, normalizedY, z };
+    Vec3 point = {normalizedX, normalizedY, z};
     Vec3 normal = normalVector(point.x, point.y, point.z, a, b, c);
 
     Vec3 ambient = lightColor * ambientStrength;
