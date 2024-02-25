@@ -37,6 +37,16 @@ void renderMenu()
     ImGui::End();
 }
 
+Vec3 lightPos = {0.0f, 0.0f, 10.0f };
+Vec3 lightColor = {1.0f, 1.0f, 0.0f };
+float ambientStrength = 0.5f;
+Vec3 ambientColor = lightColor * ambientStrength;
+
+Vec3 diffuseColor = lightColor;
+Vec3 specularColor = Vec3(1.f);
+
+Vec3 viewPos = lightPos;
+
 void calculateFragment(int startX, int startY, int endX, int endY)
 {
 }
@@ -165,6 +175,10 @@ int main(int argc, char* argv[])
                     static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255), static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
             }
         }
+
+        int minFragmentSize = 128;
+
+        processFragments(0, 0, windowWidth, windowHeight, minFragmentSize);
 
         SDL_UnlockTexture(texture);
         SDL_RenderCopy(renderer, texture, nullptr, nullptr);
