@@ -6,8 +6,47 @@
 #include "SDL.h"
 #include <algorithm>
 
+bool debug = false;
+
+int windowWidth = 1280;
+int windowHeight = 720;
+
+int defaultAccuracy = 128;
+int minFragmentSize = 4;
+
 float a = 0.5f, b = 1.0f, c = 1.5f, scale = 3.0f, m = 4.0f;
 int accuracy = 8;
+
+constexpr float floatDiff = 0.0001f;
+
+struct PreviousValues
+{
+    float a, b, c, scale, m;
+    int accuracy;
+};
+
+bool checkIfGlobalsChanged()
+{
+    static PreviousValues prev = {a, b, c, scale, m, accuracy};
+
+    bool changed = false;
+
+    if (std::fabs(a - prev.a) > floatDiff || std::fabs(b - prev.b) > floatDiff ||
+        std::fabs(c - prev.c) > floatDiff || std::fabs(scale - prev.scale) > floatDiff ||
+        std::fabs(m - prev.m) > floatDiff || accuracy != prev.accuracy)
+    {
+        changed = true;
+    }
+
+    prev.a = a;
+    prev.b = b;
+    prev.c = c;
+    prev.scale = scale;
+    prev.m = m;
+    prev.accuracy = accuracy;
+
+    return changed;
+}
 
 void renderMenu()
 {
@@ -32,48 +71,66 @@ void renderMenu()
         ImGui::Spacing();
 
         ImGui::SliderFloat("m", &m, 0.1f, 10.0f);
-        ImGui::SliderInt("accuracy", &accuracy, 1, 20);
+        ImGui::SliderInt("accuracy", &accuracy, 1, 128);
     }
     ImGui::End();
 }
 
-Vec3 lightPos = {0.0f, 0.0f, 10.0f };
-Vec3 lightColor = {1.0f, 1.0f, 0.0f };
-float ambientStrength = 0.5f;
-Vec3 ambientColor = lightColor * ambientStrength;
-
-Vec3 diffuseColor = lightColor;
-Vec3 specularColor = Vec3(1.f);
-
-Vec3 viewPos = lightPos;
-
-void calculateFragment(int startX, int startY, int endX, int endY)
+Vec4 computeColorAtCenter(int centerX, int centerY)
 {
+    return Vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }
 
-void processFragments(int startX, int startY, int fragmentWidth, int fragmentHeight, int minFragmentSize)
+
+void calculateFragment(int startX, int startY, int endX, int endY, Uint32* upixels)
 {
-    if (fragmentWidth <= minFragmentSize || fragmentHeight <= minFragmentSize)
+    int centerX = (startX + endX) / 2;
+    int centerY = (startY + endY) / 2;
+
+    Vec4 color = computeColorAtCenter(centerX, centerY);
+    int borderThickness = 1;
+
+    Uint32 borderColor = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888), 255, 255, 255, 255); // Red, as an example
+
+    for (int y = startY; y < endY; ++y)
     {
-        calculateFragment(startX, startY, startX + fragmentWidth, startY + fragmentHeight);
+        for (int x = startX; x < endX; ++x)
+        {
+            if (x < startX + borderThickness || x >= endX - borderThickness ||
+                y < startY + borderThickness || y >= endY - borderThickness)
+            {
+                upixels[y * windowWidth + x] = borderColor;
+            }
+            else
+            {
+                upixels[y * windowWidth + x] = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888),
+                    static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255),
+                    static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
+            }
+        }
+    }
+}
+
+void processFragments(int startX, int startY, int fragmentWidth, int fragmentHeight, int accuracy, Uint32* upixels)
+{
+    if (fragmentWidth <= accuracy || fragmentHeight <= accuracy)
+    {
+        calculateFragment(startX, startY, startX + fragmentWidth, startY + fragmentHeight, upixels);
         return;
     }
 
     int halfWidth = fragmentWidth / 2;
     int halfHeight = fragmentHeight / 2;
 
-    processFragments(startX, startY, halfWidth, halfHeight, minFragmentSize);
-    processFragments(startX + halfWidth, startY, halfWidth, halfHeight, minFragmentSize);
-    processFragments(startX, startY + halfHeight, halfWidth, halfHeight, minFragmentSize);
-    processFragments(startX + halfWidth, startY + halfHeight, halfWidth, halfHeight, minFragmentSize);
+    processFragments(startX, startY, halfWidth, halfHeight, accuracy, upixels);
+    processFragments(startX + halfWidth, startY, halfWidth, halfHeight, accuracy, upixels);
+    processFragments(startX, startY + halfHeight, halfWidth, halfHeight, accuracy, upixels);
+    processFragments(startX + halfWidth, startY + halfHeight, halfWidth, halfHeight, accuracy, upixels);
 }
 
 int main(int argc, char* argv[])
 {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
-
-    int windowWidth = 1280;
-    int windowHeight = 720;
 
     SDL_Window* window = SDL_CreateWindow("mg1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, 0);
     assert(window != nullptr);
@@ -92,6 +149,12 @@ int main(int argc, char* argv[])
     ImGui_ImplSDLRenderer2_Init(renderer);
 
     ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    int accuracy = defaultAccuracy;
+
+    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, windowWidth, windowHeight);
+    Uint32* upixels;
+    int pitch;
 
     bool end = false;
     while (!end)
@@ -122,73 +185,80 @@ int main(int argc, char* argv[])
 
         ImGui::Render();
 
-        SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, windowWidth, windowHeight);
-        Uint32* upixels;
-        int pitch;
-        SDL_LockTexture(texture, NULL, reinterpret_cast<void**>(&upixels), &pitch);
-
-        Vec3 lightPos{0.0f, 0.0f, 10.0f};
-        Vec3 lightColor{1.0f, 1.0f, 0.0f};
-        float ambientStrength = 0.5f;
-        Vec3 ambientColor = lightColor * ambientStrength;
-
-        Vec3 diffuseColor = lightColor;
-        Vec3 specularColor = Vec3(1.f);
-
-        Vec3 viewPos = lightPos;
-
-        for (int y = 0; y < windowHeight; ++y)
+        if (checkIfGlobalsChanged())
         {
-            for (int x = 0; x < windowWidth; ++x)
-            {
-                float normalizedX = (static_cast<float>(x) / windowWidth - 0.5f) * scale;
-                float normalizedY = (0.5f - static_cast<float>(y) / windowHeight) * scale;
-                Vec4 color{0.0f, 0.0f, 0.0f, 1.0f};
+            accuracy = defaultAccuracy;
+        }
+        else if (accuracy > minFragmentSize)
+        {
+            SDL_LockTexture(texture, NULL, reinterpret_cast<void**>(&upixels), &pitch);
 
-                float z = elipsoidZ(normalizedX, normalizedY, a, b, c);
-                if (!std::isnan(z))
-                {
-                    Vec3 point = {normalizedX, normalizedY, z};
-                    Vec3 normal = normalVector(point.x, point.y, point.z, a, b, c);
+            //Vec3 lightPos{ 0.0f, 0.0f, 10.0f };
+            //Vec3 lightColor{ 1.0f, 1.0f, 0.0f };
+            //float ambientStrength = 0.5f;
+            //Vec3 ambientColor = lightColor * ambientStrength;
 
-                    Vec3 ambient = ambientColor;
+            //Vec3 diffuseColor = lightColor;
+            //Vec3 specularColor = Vec3(1.f);
 
-                    Vec3 lightDir = normalize(lightPos - point);
-                    float diff = std::max(dot(normal, lightDir), 0.f);
-                    Vec3 diffuse = diff * diffuseColor;
+            //Vec3 viewPos = lightPos;
 
-                    Vec3 viewDir = normalize(viewPos - point);
-                    Vec3 reflectDir = reflect(-lightDir, normal);
-                    float spec = pow(std::max(dot(viewDir, reflectDir), 0.f), m);
-                    Vec3 specular = spec * specularColor;
+            //for (int y = 0; y < windowHeight; ++y)
+            //{
+            //    for (int x = 0; x < windowWidth; ++x)
+            //    {
+            //        float normalizedX = (static_cast<float>(x) / windowWidth - 0.5f) * scale;
+            //        float normalizedY = (0.5f - static_cast<float>(y) / windowHeight) * scale;
+            //        Vec4 color{ 0.0f, 0.0f, 0.0f, 1.0f };
 
-                    Vec3 finalColor = ambient + diffuse + specular;
+            //        float z = elipsoidZ(normalizedX, normalizedY, a, b, c);
+            //        if (!std::isnan(z))
+            //        {
+            //            Vec3 point = { normalizedX, normalizedY, z };
+            //            Vec3 normal = normalVector(point.x, point.y, point.z, a, b, c);
 
-                    finalColor.x = std::clamp(finalColor.x, 0.f, 1.f);
-                    finalColor.y = std::clamp(finalColor.y, 0.f, 1.f);
-                    finalColor.z = std::clamp(finalColor.z, 0.f, 1.f);
+            //            Vec3 ambient = ambientColor;
 
-                    color = Vec4{finalColor.x, finalColor.y, finalColor.z, 1.f};
-                }
+            //            Vec3 lightDir = normalize(lightPos - point);
+            //            float diff = std::max(dot(normal, lightDir), 0.f);
+            //            Vec3 diffuse = diff * diffuseColor;
 
-                upixels[y * windowWidth + x] = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888),
-                    static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255), static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
-            }
+            //            Vec3 viewDir = normalize(viewPos - point);
+            //            Vec3 reflectDir = reflect(-lightDir, normal);
+            //            float spec = pow(std::max(dot(viewDir, reflectDir), 0.f), m);
+            //            Vec3 specular = spec * specularColor;
+
+            //            Vec3 finalColor = ambient + diffuse + specular;
+
+            //            finalColor.x = std::clamp(finalColor.x, 0.f, 1.f);
+            //            finalColor.y = std::clamp(finalColor.y, 0.f, 1.f);
+            //            finalColor.z = std::clamp(finalColor.z, 0.f, 1.f);
+
+            //            color = Vec4{ finalColor.x, finalColor.y, finalColor.z, 1.f };
+            //        }
+
+            //        upixels[y * windowWidth + x] = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888),
+            //            static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255), static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
+            //    }
+            //}
+
+            processFragments(0, 0, windowWidth, windowHeight, accuracy, upixels);
+
+            SDL_UnlockTexture(texture);
+
+            accuracy--;
         }
 
-        int minFragmentSize = 128;
-
-        processFragments(0, 0, windowWidth, windowHeight, minFragmentSize);
-
-        SDL_UnlockTexture(texture);
         SDL_RenderCopy(renderer, texture, nullptr, nullptr);
-        SDL_DestroyTexture(texture);
 
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 
         SDL_RenderPresent(renderer);
+
+        std::cout << accuracy << "\n";
     }
 
+    SDL_DestroyTexture(texture);
 
     ImGui_ImplSDLRenderer2_Shutdown();
     ImGui_ImplSDL2_Shutdown();
