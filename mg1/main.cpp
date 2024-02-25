@@ -4,6 +4,7 @@
 #include "math.hpp"
 #include "equations.hpp"
 #include "SDL.h"
+#include <algorithm>
 
 float a = 0.5f, b = 1.0f, c = 1.5f, scale = 3.0f, m = 4.0f;
 int accuracy = 8;
@@ -118,27 +119,31 @@ int main(int argc, char* argv[])
                 float z = elipsoidZ(normalizedX, normalizedY, a, b, c);
                 if (!std::isnan(z))
                 {
-                    Vec3 point = {normalizedX, normalizedY, 0.f};
+                    Vec3 point = {normalizedX, normalizedY, z};
                     Vec3 normal = normalVector(point.x, point.y, point.z, a, b, c);
 
                     Vec3 ambient = ambientColor;
 
                     Vec3 lightDir = normalize(lightPos - point);
-                    float diff = std::min(pow(std::max(dot(normal, lightDir), 0.f), m), 1.f);
-                    Vec3 diffuse = diff * diffuseColor * lightColor;
+                    float diff = std::max(dot(normal, lightDir), 0.f);
+                    Vec3 diffuse = diff * diffuseColor;
 
                     Vec3 viewDir = normalize(viewPos - point);
                     Vec3 reflectDir = reflect(-lightDir, normal);
-                    float spec = std::max(dot(viewDir, reflectDir), 0.f);
-                    Vec3 specular = spec * specularColor * lightColor;
+                    float spec = pow(std::max(dot(viewDir, reflectDir), 0.f), m);
+                    Vec3 specular = spec * specularColor;
 
                     Vec3 finalColor = normal;
 
-                    color = Vec4(finalColor.x, finalColor.y, finalColor.z, 1.f);
+                    finalColor.x = std::clamp(pow(finalColor.x, m), 0.f, 1.f);
+                    finalColor.y = std::clamp(pow(finalColor.y, m), 0.f, 1.f);
+                    finalColor.z = std::clamp(pow(finalColor.z, m), 0.f, 1.f);
+
+                    color = Vec4{finalColor.x, finalColor.y, finalColor.z, 1.f};
                 }
 
                 upixels[y * windowWidth + x] = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888),
-                    static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255), static_cast<Uint8>(color.z * 255), 255);
+                    static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255), static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
             }
         }
 

@@ -40,29 +40,27 @@ inline float gradientMagnitude(float x, float y, float z, float a, float b, floa
     float dx = partialZPartialX(x, y, a, b, c);
     float dy = partialZPartialY(x, y, a, b, c);
 
-    return sqrt(dx * dx + dy * dy + z * z);
+    return sqrt(dx * dx + dy * dy);
 }
 
 inline Vec3 normalVector(float x, float y, float z, float a, float b, float c)
 {
-    float dx = partialZPartialX(x, y, a, b, c);
-    float dy = partialZPartialY(x, y, a, b, c);
-    float mag = gradientMagnitude(x, y, z, a, b, c);
+    //float dx = partialZPartialX(x, y, a, b, c);
+    //float dy = partialZPartialY(x, y, a, b, c);
+    //float mag = gradientMagnitude(x, y, z, a, b, c);
 
+    //float nx = dx / mag;
+    //float ny = dy / mag;
 
-    //if (mag == 0)
-    //{
-    //    std::fstream f;
-    //    f.open("out.txt", std::ios::out | std::ios::app);
-    //    f << x << " " << y << "\n";
-    //    f.close();
+    //float nz = 1 / mag;
 
-    //}
+    //return {nx, ny, nz};
 
-    float nx = dx / mag;
-    float ny = dy / mag;
+    Vec3 grad = { 2 * a * x, 2 * b * y, 2 * c * z };
 
-    float nz = 1 / mag;
+    float magnitude = sqrt(grad.x * grad.x + grad.y * grad.y + grad.z * grad.z);
 
-    return {nx, ny, nz};
+    Vec3 normal = { grad.x / magnitude, grad.y / magnitude, grad.z / magnitude };
+
+    return normal;
 }

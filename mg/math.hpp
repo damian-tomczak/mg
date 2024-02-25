@@ -1,6 +1,8 @@
 #pragma once
 #include <cmath>
 
+struct Vec3;
+
 struct Vec4
 {
     float x, y, z, w;
