@@ -8,10 +8,10 @@
 
 inline float elipsoidZ(float x, float y, float tx, float ty, float tz, float a, float b, float c)
 {
-    double discriminant = sqrt(c * (-a * tx * tx + 2 * a * tx * x - a * x * x - b * ty * ty + 2 * b * ty * y - b * y * y + 1));
+    float discriminant = sqrt(c * (-a * tx * tx + 2 * a * tx * x - a * x * x - b * ty * ty + 2 * b * ty * y - b * y * y + 1));
 
-    double z1 = (c * tz - discriminant) / c;
-    double z2 = (c * tz + discriminant) / c;
+    float z1 = (c * tz - discriminant) / c;
+    float z2 = (c * tz + discriminant) / c;
 
     return z2;
 }

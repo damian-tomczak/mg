@@ -43,19 +43,19 @@ void renderMenu()
     {
         ImGui::Text("Adjust Values");
 
-        isUIclicked = ImGui::SliderFloat("a", &a, 0.0f, 10.0f);
-        isUIclicked = ImGui::SliderFloat("b", &b, 0.0f, 10.0f);
-        isUIclicked = ImGui::SliderFloat("c", &c, 0.1f, 10.0f);
-        isUIclicked = ImGui::SliderFloat("scaleObj", &scaleObj, 0.0f, 10.0f);
+        isUIclicked = false;
+
+        isUIclicked |= ImGui::SliderFloat("a", &a, 0.0f, 10.0f);
+        isUIclicked |= ImGui::SliderFloat("b", &b, 0.0f, 10.0f);
+        isUIclicked |= ImGui::SliderFloat("c", &c, 0.1f, 10.0f);
+        isUIclicked |= ImGui::SliderFloat("scaleObj", &scaleObj, 0.0f, 10.0f);
 
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
-        isUIclicked = ImGui::SliderFloat("m", &m, 0.1f, 10.0f);
-        isUIclicked = ImGui::SliderInt("accuracy", &startingAccuracy, 1, 128);
-
-        std::cout << std::boolalpha << isUIclicked << "\n";
+        isUIclicked |= ImGui::SliderFloat("m", &m, 0.1f, 10.0f);
+        isUIclicked |= ImGui::SliderInt("accuracy", &startingAccuracy, minFragmentSize, 128);
     }
     ImGui::End();
 }

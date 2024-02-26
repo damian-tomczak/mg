@@ -12,14 +12,10 @@ inline Vec4 computeColorAtCenter(int centerX, int centerY)
     float normalizedX = (static_cast<float>(centerX) / windowWidth - 0.5f) * scaleObj;
     float normalizedY = (0.5f - static_cast<float>(centerY) / windowHeight) * scaleObj;
 
-    float z = elipsoidZ(normalizedX, normalizedY, 1, 0, 0, a, b, c);
+    float z = elipsoidZ(normalizedX, normalizedY, 0, 0, 0, a, b, c);
     if (std::isnan(z))
     {
         return Vec4{1.0f, 0.0f, 0.0f, 1.0f};
-    }
-    else
-    {
-        return Vec4{0.f, 1.f, 0.f, 1.f};
     }
 
     Vec3 point = {normalizedX, normalizedY, z};
