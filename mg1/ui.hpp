@@ -7,16 +7,18 @@
 
 #include <iostream>
 
-inline bool isMenuEnabled = false;
 
 class Menu
 {
 public:
-    static void renderMenu();
-    static float getMenuWidth();
+    Menu() = default;
+
+    void renderMenu();
+    float getMenuWidth();
+    bool getMenuEnabled() { return mIsMenuEnabled; }
 
 private:
-    Menu() = default;
+    bool mIsMenuEnabled = false;
 };
 
 inline void Menu::renderMenu()
@@ -30,7 +32,7 @@ inline void Menu::renderMenu()
 
     if (ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
     {
-        isMenuEnabled = true;
+        mIsMenuEnabled = true;
 
         ImGui::Text("Adjust Values");
 

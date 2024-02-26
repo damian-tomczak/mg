@@ -1,5 +1,7 @@
 #include "rendering.hpp"
 
+Menu menu;
+
 bool shouldReRender()
 {
     static RendererValues prev = {a, b, c, scaleObj, m, startingAccuracy, objPos};
@@ -93,7 +95,7 @@ int main(int argc, char* argv[])
                     int mouseX, mouseY;
                     SDL_GetMouseState(&mouseX, &mouseY);
 
-                    if (isMenuEnabled && (mouseX >= windowWidth - Menu::getMenuWidth()))
+                    if (menu.getMenuEnabled() && (mouseX >= windowWidth - menu.getMenuWidth()))
                     {
                         isDragging = false;
                         break;
@@ -117,7 +119,7 @@ int main(int argc, char* argv[])
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        Menu::renderMenu();
+        menu.renderMenu();
 
         SDL_SetRenderDrawColor(renderer,
             static_cast<Uint8>(clearColor.x * 255),
