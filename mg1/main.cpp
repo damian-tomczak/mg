@@ -93,12 +93,18 @@ int main(int argc, char* argv[])
                     int mouseX, mouseY;
                     SDL_GetMouseState(&mouseX, &mouseY);
 
+                    if (isMenuEnabled && (mouseX >= windowWidth - Menu::getMenuWidth()))
+                    {
+                        isDragging = false;
+                        break;
+                    }
+
                     int dx = mouseX - lastMouseX;
                     int dy = mouseY - lastMouseY;
 
                     // TODO: deltaTime
                     objPos.x += dx * mouseSensitivity;
-                    objPos.y += dy * mouseSensitivity;
+                    objPos.y += -dy * mouseSensitivity;
 
                     lastMouseX = mouseX;
                     lastMouseY = mouseY;

@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+inline bool isMenuEnabled = false;
+
 class Menu
 {
 public:
@@ -28,6 +30,8 @@ inline void Menu::renderMenu()
 
     if (ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
     {
+        isMenuEnabled = true;
+
         ImGui::Text("Adjust Values");
 
         isUIclicked = false;
