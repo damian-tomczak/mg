@@ -2,6 +2,8 @@
 
 #include "math.hpp"
 
+inline float mouseSensitivity = 0.005f;
+
 inline bool debug = false;
 
 inline int windowWidth = 1280;
@@ -27,7 +29,7 @@ inline Vec3 viewPos = lightPos;
 
 inline Vec4 objPos;
 
-struct PreviousValues
+struct RendererValues
 {
     float a, b, c, scaleObj, m;
     int accuracy;

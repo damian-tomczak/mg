@@ -1,8 +1,8 @@
 #include "rendering.hpp"
 
-bool dataChanged()
+bool shouldReRender()
 {
-    static PreviousValues prev = {a, b, c, scaleObj, m, startingAccuracy, objPos};
+    static RendererValues prev = {a, b, c, scaleObj, m, startingAccuracy, objPos};
 
     bool changed = false;
 
@@ -96,8 +96,9 @@ int main(int argc, char* argv[])
                     int dx = mouseX - lastMouseX;
                     int dy = mouseY - lastMouseY;
 
-                    objPos.x += dx;
-                    objPos.y += dy;
+                    // TODO: deltaTime
+                    objPos.x += dx * mouseSensitivity;
+                    objPos.y += dy * mouseSensitivity;
 
                     lastMouseX = mouseX;
                     lastMouseY = mouseY;
@@ -110,7 +111,7 @@ int main(int argc, char* argv[])
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        renderMenu();
+        Menu::renderMenu();
 
         SDL_SetRenderDrawColor(renderer,
             static_cast<Uint8>(clearColor.x * 255),
@@ -122,13 +123,13 @@ int main(int argc, char* argv[])
 
         ImGui::Render();
 
-        bool globalsChanged = dataChanged();
+        bool reRender = shouldReRender();
 
-        if (globalsChanged || (accuracy > minFragmentSize) || isUIclicked)
+        if (reRender || (accuracy > minFragmentSize) || isUIclicked)
         {
             SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
 
-            if (globalsChanged || isUIclicked)
+            if (reRender || isUIclicked)
             {
                 accuracy = startingAccuracy;
             }

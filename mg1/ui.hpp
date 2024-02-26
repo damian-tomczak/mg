@@ -7,11 +7,21 @@
 
 #include <iostream>
 
-void renderMenu()
+class Menu
 {
-    ImVec2 windowSize = ImGui::GetIO().DisplaySize;
+public:
+    static void renderMenu();
+    static float getMenuWidth();
 
-    float menuWidth = windowSize.x * 0.2f;
+private:
+    Menu() = default;
+};
+
+inline void Menu::renderMenu()
+{
+    const ImVec2 windowSize = ImGui::GetIO().DisplaySize;
+
+    const float menuWidth = getMenuWidth();
 
     ImGui::SetNextWindowPos(ImVec2(windowSize.x - menuWidth, 0));
     ImGui::SetNextWindowSize(ImVec2(menuWidth, windowSize.y));
@@ -35,4 +45,13 @@ void renderMenu()
         ImGui::SliderInt("accuracy", &startingAccuracy, minFragmentSize, 128); isUIclicked |= ImGui::IsItemActive();
     }
     ImGui::End();
+}
+
+inline float Menu::getMenuWidth()
+{
+    ImVec2 windowSize = ImGui::GetIO().DisplaySize;
+
+    float menuWidth = windowSize.x * 0.2f;
+
+    return menuWidth;
 }
