@@ -40,7 +40,6 @@ inline Vec4 computeColorAtCenter(int centerX, int centerY)
     return Vec4{finalColor.x, finalColor.y, finalColor.z, 1.f};
 }
 
-
 inline void calculateFragment(int startX, int startY, int endX, int endY, Uint32* upixels)
 {
     int centerX = (startX + endX) / 2;
@@ -61,7 +60,7 @@ inline void calculateFragment(int startX, int startY, int endX, int endY, Uint32
 
 inline void processFragments(int startX, int startY, int fragmentWidth, int fragmentHeight, int accuracy, Uint32* upixels)
 {
-    if (fragmentWidth <= accuracy || fragmentHeight <= accuracy)
+    if ((fragmentWidth <= accuracy) || (fragmentHeight <= accuracy))
     {
         calculateFragment(startX, startY, startX + fragmentWidth, startY + fragmentHeight, upixels);
         return;
@@ -71,7 +70,7 @@ inline void processFragments(int startX, int startY, int fragmentWidth, int frag
     int halfHeight = fragmentHeight / 2;
 
     processFragments(startX, startY, halfWidth, halfHeight, accuracy, upixels);
-    processFragments(startX + halfWidth, startY, halfWidth, halfHeight, accuracy, upixels);
-    processFragments(startX, startY + halfHeight, halfWidth, halfHeight, accuracy, upixels);
-    processFragments(startX + halfWidth, startY + halfHeight, halfWidth, halfHeight, accuracy, upixels);
+    processFragments(startX + halfWidth, startY, fragmentWidth - halfWidth, halfHeight, accuracy, upixels);
+    processFragments(startX, startY + halfHeight, halfWidth, fragmentHeight - halfHeight, accuracy, upixels);
+    processFragments(startX + halfWidth, startY + halfHeight, fragmentWidth - halfWidth, fragmentHeight - halfHeight, accuracy, upixels);
 }

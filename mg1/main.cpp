@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
 
-    ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 clearColor{0.45f, 0.55f, 0.60f, 1.00f};
 
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, windowWidth, windowHeight);
     Uint32* pixels;
@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
 
         bool reRender = shouldReRender();
 
-        if (reRender || (accuracy > minFragmentSize) || isUIclicked)
+        if (reRender || (accuracy >= minFragmentSize) || isUIclicked)
         {
             SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
 
