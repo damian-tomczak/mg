@@ -57,17 +57,17 @@ int main(int argc, char* argv[])
 
         bool globalsChanged = checkIfGlobalsChanged();
 
-        if (globalsChanged || (accuracy > minFragmentSize))
+        if (globalsChanged || (accuracy > minFragmentSize) || isUIclicked)
         {
             SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
 
-            if (globalsChanged)
+            if (globalsChanged || isUIclicked)
             {
                 accuracy = startingAccuracy;
-
-                int totalBytes = pitch * windowHeight;
-                memset(pixels, 0, totalBytes);
             }
+
+            int totalBytes = pitch * windowHeight;
+            memset(pixels, 0, totalBytes);
 
             processFragments(0, 0, windowWidth, windowHeight, accuracy, pixels);
 

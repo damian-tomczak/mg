@@ -45,17 +45,17 @@ void renderMenu()
 
         isUIclicked = false;
 
-        isUIclicked |= ImGui::SliderFloat("a", &a, 0.0f, 10.0f);
-        isUIclicked |= ImGui::SliderFloat("b", &b, 0.0f, 10.0f);
-        isUIclicked |= ImGui::SliderFloat("c", &c, 0.1f, 10.0f);
-        isUIclicked |= ImGui::SliderFloat("scaleObj", &scaleObj, 0.0f, 10.0f);
+        ImGui::SliderFloat("a", &a, 0.0f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("b", &b, 0.0f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("c", &c, 0.1f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("scaleObj", &scaleObj, 0.0f, 10.0f);                isUIclicked |= ImGui::IsItemActive();
 
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
-        isUIclicked |= ImGui::SliderFloat("m", &m, 0.1f, 10.0f);
-        isUIclicked |= ImGui::SliderInt("accuracy", &startingAccuracy, minFragmentSize, 128);
+        ImGui::SliderFloat("m", &m, 0.1f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderInt("accuracy", &startingAccuracy, minFragmentSize, 128); isUIclicked |= ImGui::IsItemActive();
     }
     ImGui::End();
 }
