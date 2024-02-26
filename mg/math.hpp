@@ -1,22 +1,24 @@
 #pragma once
+
 #include <cmath>
 #include <array>
 #include <format>
 
 struct Vec3;
+struct Vec4;
 
 struct Vec4
 {
-    float x, y, z, w;
+    float x{}, y{}, z{}, w{};
 
     auto operator<=>(const Vec4& other) const = default;
 
     constexpr Vec4() = default;
 
-    Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w)
+    Vec4(float x, float y, float z, float w) : x{x}, y{y}, z{z}, w{w}
     {}
 
-    Vec4(float value) : x(value), y(value), z(value), w(value)
+    Vec4(float value) : x{value}, y{value}, z{value}, w{value}
     {}
 
     Vec4 operator+(const Vec4& rhs) const
@@ -53,14 +55,14 @@ struct Vec4
 
 struct Vec3
 {
-    float x, y, z;
+    float x{}, y{}, z{};
 
     auto operator<=>(const Vec3& other) const = default;
 
-    Vec3(float x, float y, float z) : x(x), y(y), z(z)
+    Vec3(float x, float y, float z) : x{x}, y{y}, z{z}
     {}
 
-    Vec3(float value) : x(value), y(value), z(value)
+    Vec3(float value) : x{value}, y{value}, z{value}
     {}
 
     Vec3 operator+(const Vec3& rhs) const

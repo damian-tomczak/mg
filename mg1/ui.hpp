@@ -7,29 +7,6 @@
 
 #include <iostream>
 
-bool checkIfGlobalsChanged()
-{
-    static PreviousValues prev = { a, b, c, scaleObj, m, startingAccuracy };
-
-    bool changed = false;
-
-    if (std::fabs(a - prev.a) > floatDiff || std::fabs(b - prev.b) > floatDiff ||
-        std::fabs(c - prev.c) > floatDiff || std::fabs(scaleObj - prev.scaleObj) > floatDiff ||
-        std::fabs(m - prev.m) > floatDiff || startingAccuracy != prev.accuracy)
-    {
-        changed = true;
-    }
-
-    prev.a = a;
-    prev.b = b;
-    prev.c = c;
-    prev.scaleObj = scaleObj;
-    prev.m = m;
-    prev.accuracy = startingAccuracy;
-
-    return changed;
-}
-
 void renderMenu()
 {
     ImVec2 windowSize = ImGui::GetIO().DisplaySize;

@@ -25,10 +25,13 @@ inline Vec3 specularColor = Vec3(1.f);
 
 inline Vec3 viewPos = lightPos;
 
+inline Vec4 objPos;
+
 struct PreviousValues
 {
     float a, b, c, scaleObj, m;
     int accuracy;
+    Vec4 objPos;
 };
 
-bool isUIclicked = false;
+inline bool isUIclicked = false;

@@ -1,5 +1,38 @@
 #include "rendering.hpp"
 
+bool dataChanged()
+{
+    static PreviousValues prev = {a, b, c, scaleObj, m, startingAccuracy, objPos};
+
+    bool changed = false;
+
+    if (std::fabs(a - prev.a) > floatDiff ||
+        std::fabs(c - prev.c) > floatDiff ||
+        std::fabs(m - prev.m) > floatDiff ||
+
+        std::fabs(objPos.x - prev.objPos.x) > floatDiff ||
+        std::fabs(objPos.y - prev.objPos.y) > floatDiff ||
+        std::fabs(objPos.z - prev.objPos.z) > floatDiff ||
+
+        std::fabs(b - prev.b) > floatDiff ||
+        std::fabs(scaleObj - prev.scaleObj) > floatDiff ||
+        startingAccuracy != prev.accuracy
+        )
+    {
+        changed = true;
+    }
+
+    prev.a = a;
+    prev.b = b;
+    prev.c = c;
+    prev.scaleObj = scaleObj;
+    prev.m = m;
+    prev.accuracy = startingAccuracy;
+    prev.objPos = objPos;
+
+    return changed;
+}
+
 int main(int argc, char* argv[])
 {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
@@ -26,6 +59,9 @@ int main(int argc, char* argv[])
     Uint32* pixels;
     int pitch;
 
+    bool isDragging = false;
+    int lastMouseX, lastMouseY;
+
     bool end = false;
     while (!end)
     {
@@ -33,9 +69,40 @@ int main(int argc, char* argv[])
         while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
-            if (event.type == SDL_QUIT)
+            switch (event.type)
             {
+            case SDL_QUIT:
                 end = true;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    isDragging = true;
+                    SDL_GetMouseState(&lastMouseX, &lastMouseY);
+                }
+                break;
+            case SDL_MOUSEBUTTONUP:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    isDragging = false;
+                }
+                break;
+            case SDL_MOUSEMOTION:
+                if (isDragging)
+                {
+                    int mouseX, mouseY;
+                    SDL_GetMouseState(&mouseX, &mouseY);
+
+                    int dx = mouseX - lastMouseX;
+                    int dy = mouseY - lastMouseY;
+
+                    objPos.x += dx;
+                    objPos.y += dy;
+
+                    lastMouseX = mouseX;
+                    lastMouseY = mouseY;
+                }
+                break;
             }
         }
 
@@ -55,7 +122,7 @@ int main(int argc, char* argv[])
 
         ImGui::Render();
 
-        bool globalsChanged = checkIfGlobalsChanged();
+        bool globalsChanged = dataChanged();
 
         if (globalsChanged || (accuracy > minFragmentSize) || isUIclicked)
         {
