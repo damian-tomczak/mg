@@ -44,7 +44,7 @@ inline float gradientMagnitude(float x, float y, float z, float a, float b, floa
     return sqrt(dx * dx + dy * dy);
 }
 
-inline Vec3 normalVector(float x, float y, float z, float a, float b, float c)
+inline glm::vec3 normalVector(float x, float y, float z, float a, float b, float c)
 {
     //float dx = partialZPartialX(x, y, a, b, c);
     //float dy = partialZPartialY(x, y, a, b, c);
@@ -57,11 +57,11 @@ inline Vec3 normalVector(float x, float y, float z, float a, float b, float c)
 
     //return {nx, ny, nz};
 
-    Vec3 grad = { 2 * a * x, 2 * b * y, 2 * c * z };
+    glm::vec3 grad = { 2 * a * x, 2 * b * y, 2 * c * z };
 
     float magnitude = sqrt(grad.x * grad.x + grad.y * grad.y + grad.z * grad.z);
 
-    Vec3 normal = { grad.x / magnitude, grad.y / magnitude, grad.z / magnitude };
+    glm::vec3 normal = { grad.x / magnitude, grad.y / magnitude, grad.z / magnitude };
 
     return normal;
 }

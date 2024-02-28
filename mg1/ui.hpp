@@ -23,6 +23,8 @@ private:
 
 inline void Menu::renderMenu()
 {
+    mIsMenuEnabled = false;
+
     const ImVec2 windowSize = ImGui::GetIO().DisplaySize;
 
     const float menuWidth = getMenuWidth();

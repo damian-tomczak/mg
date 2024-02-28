@@ -1,6 +1,6 @@
 #pragma once
 
-#include "math.hpp"
+#include "glm/glm.hpp"
 
 inline float mouseSensitivity = 0.005f;
 
@@ -17,23 +17,23 @@ inline int accuracy = startingAccuracy;
 
 inline constexpr float floatDiff = 0.0001f;
 
-inline Vec3 lightPos{ 0.0f, 0.0f, 10.0f };
-inline Vec3 lightColor{ 1.0f, 1.0f, 0.0f };
+inline glm::vec3 lightPos{ 0.0f, 0.0f, 10.0f };
+inline glm::vec3 lightColor{ 1.0f, 1.0f, 0.0f };
 inline float ambientStrength = 0.5f;
-inline Vec3 ambientColor = lightColor * ambientStrength;
+inline glm::vec3 ambientColor = lightColor * ambientStrength;
 
-inline Vec3 diffuseColor = lightColor;
-inline Vec3 specularColor = Vec3(1.f);
+inline glm::vec3 diffuseColor = lightColor;
+inline glm::vec3 specularColor = glm::vec3(1.f);
 
-inline Vec3 viewPos = lightPos;
+inline glm::vec3 viewPos = lightPos;
 
-inline Vec4 objPos;
+inline glm::vec4 objPos;
 
 struct RendererValues
 {
     float a, b, c, scaleObj, m;
     int accuracy;
-    Vec4 objPos;
+    glm::vec4 objPos;
 };
 
 inline bool isUIclicked = false;

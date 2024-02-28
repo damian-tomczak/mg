@@ -9,6 +9,36 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "external", "external", "{6C
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "external\imgui\imgui.vcxproj", "{41703C86-23EE-4958-A3D6-1D00D8066769}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "glm", "glm", "{741393D2-74CB-4EE6-8364-7A29A29C6C68}"
+	ProjectSection(SolutionItems) = preProject
+		external\glm\glm\CMakeLists.txt = external\glm\glm\CMakeLists.txt
+		external\glm\glm\common.hpp = external\glm\glm\common.hpp
+		external\glm\glm\copying.txt = external\glm\glm\copying.txt
+		external\glm\glm\exponential.hpp = external\glm\glm\exponential.hpp
+		external\glm\glm\ext.hpp = external\glm\glm\ext.hpp
+		external\glm\glm\fwd.hpp = external\glm\glm\fwd.hpp
+		external\glm\glm\geometric.hpp = external\glm\glm\geometric.hpp
+		external\glm\glm\glm.cppm = external\glm\glm\glm.cppm
+		external\glm\glm\glm.hpp = external\glm\glm\glm.hpp
+		external\glm\glm\integer.hpp = external\glm\glm\integer.hpp
+		external\glm\glm\mat2x2.hpp = external\glm\glm\mat2x2.hpp
+		external\glm\glm\mat2x3.hpp = external\glm\glm\mat2x3.hpp
+		external\glm\glm\mat2x4.hpp = external\glm\glm\mat2x4.hpp
+		external\glm\glm\mat3x2.hpp = external\glm\glm\mat3x2.hpp
+		external\glm\glm\mat3x3.hpp = external\glm\glm\mat3x3.hpp
+		external\glm\glm\mat3x4.hpp = external\glm\glm\mat3x4.hpp
+		external\glm\glm\mat4x2.hpp = external\glm\glm\mat4x2.hpp
+		external\glm\glm\mat4x3.hpp = external\glm\glm\mat4x3.hpp
+		external\glm\glm\mat4x4.hpp = external\glm\glm\mat4x4.hpp
+		external\glm\glm\matrix.hpp = external\glm\glm\matrix.hpp
+		external\glm\glm\packing.hpp = external\glm\glm\packing.hpp
+		external\glm\glm\trigonometric.hpp = external\glm\glm\trigonometric.hpp
+		external\glm\glm\vec2.hpp = external\glm\glm\vec2.hpp
+		external\glm\glm\vec3.hpp = external\glm\glm\vec3.hpp
+		external\glm\glm\vec4.hpp = external\glm\glm\vec4.hpp
+		external\glm\glm\vector_relational.hpp = external\glm\glm\vector_relational.hpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -24,6 +54,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{41703C86-23EE-4958-A3D6-1D00D8066769} = {6C3E0DC8-40AD-4E0D-A844-E3995CD86979}
+		{741393D2-74CB-4EE6-8364-7A29A29C6C68} = {6C3E0DC8-40AD-4E0D-A844-E3995CD86979}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C67D907-8EB6-4C56-AE55-FEE7097F740F}
