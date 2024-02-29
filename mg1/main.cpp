@@ -1,41 +1,8 @@
-#include "rendering.hpp"
+#include "renderer.hpp"
 
 #include <thread>
 
 Menu menu;
-
-bool shouldReRender()
-{
-    static RendererValues prev = {a, b, c, scaleObj, m, startingAccuracy, objPos};
-
-    bool changed = false;
-
-    if (std::fabs(a - prev.a) > floatDiff ||
-        std::fabs(c - prev.c) > floatDiff ||
-        std::fabs(m - prev.m) > floatDiff ||
-
-        std::fabs(objPos.x - prev.objPos.x) > floatDiff ||
-        std::fabs(objPos.y - prev.objPos.y) > floatDiff ||
-        std::fabs(objPos.z - prev.objPos.z) > floatDiff ||
-
-        std::fabs(b - prev.b) > floatDiff ||
-        std::fabs(scaleObj - prev.scaleObj) > floatDiff ||
-        startingAccuracy != prev.accuracy
-        )
-    {
-        changed = true;
-    }
-
-    prev.a = a;
-    prev.b = b;
-    prev.c = c;
-    prev.scaleObj = scaleObj;
-    prev.m = m;
-    prev.accuracy = startingAccuracy;
-    prev.objPos = objPos;
-
-    return changed;
-}
 
 int main(int argc, char* argv[])
 {
@@ -62,12 +29,16 @@ int main(int argc, char* argv[])
     SDL_Texture* previousTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, windowWidth, windowHeight);
     SDL_Texture* newTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, windowWidth, windowHeight);
 
-    int accuracy = startingAccuracy;
+    AdaptiveRenderer adaptiveRenderer;
+
+    EllipsoidProperties properties;
+
+    int accuracyCounter = properties.accuracy;
 
     bool isDragging = false;
     int lastMouseX, lastMouseY;
 
-    std::thread ellipsoidDrawing = std::thread(drawElipsoid, newTexture, accuracy);
+    std::thread ellipsoidDrawing = std::thread(&AdaptiveRenderer::drawElipsoid, &adaptiveRenderer, newTexture, accuracyCounter, properties);
 
     bool end = false;
     while (!end)
@@ -115,10 +86,12 @@ int main(int argc, char* argv[])
                     switch(interactionType)
                     {
                     case InteractionType::MOVE:
-                        objPos.x += dx * mouseSensitivity;
-                        objPos.y += -dy * mouseSensitivity;
+                        properties.position.x += dx * mouseSensitivity;
+                        properties.position.y += -dy * mouseSensitivity;
                         break;
                     case InteractionType::ROTATE:
+                        properties.rotation.x += dx * mouseSensitivity;
+                        properties.rotation.y += -dy * mouseSensitivity;
                         break;
                     default:
                         assert(false);
@@ -135,7 +108,7 @@ int main(int argc, char* argv[])
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        menu.renderMenu();
+        menu.renderMenu(properties);
 
         SDL_SetRenderDrawColor(renderer,
             static_cast<Uint8>(clearColor.x * 255),
@@ -147,13 +120,13 @@ int main(int argc, char* argv[])
 
         ImGui::Render();
 
-        bool reRender = shouldReRender();
+        bool reRender = adaptiveRenderer.shouldReRender(properties);
 
-        if (reRender || (accuracy >= minFragmentSize) || isUIclicked)
+        if (reRender || (accuracyCounter >= minFragmentSize) || isUIclicked)
         {
             if (reRender || isUIclicked)
             {
-                accuracy = startingAccuracy;
+                accuracyCounter = properties.accuracy;
             }
 
             if (isFinished)
@@ -167,8 +140,8 @@ int main(int argc, char* argv[])
 
                 SDL_SetRenderTarget(renderer, nullptr);
 
-                ellipsoidDrawing = std::thread(drawElipsoid, newTexture, accuracy);
-                accuracy--;
+                ellipsoidDrawing = std::thread(&AdaptiveRenderer::drawElipsoid, &adaptiveRenderer, newTexture, accuracyCounter, properties);
+                accuracyCounter--;
             }
 
         }

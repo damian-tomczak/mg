@@ -32,7 +32,7 @@
     <ClInclude Include="ui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rendering.hpp">
+    <ClInclude Include="renderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

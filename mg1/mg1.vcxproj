@@ -140,7 +140,7 @@
     <ClInclude Include="..\mg\math.hpp" />
     <ClInclude Include="equations.hpp" />
     <ClInclude Include="globals.hpp" />
-    <ClInclude Include="rendering.hpp" />
+    <ClInclude Include="renderer.hpp" />
     <ClInclude Include="ui.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

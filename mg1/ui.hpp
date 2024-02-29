@@ -18,7 +18,7 @@ class Menu
 public:
     Menu() = default;
 
-    void renderMenu();
+    void renderMenu(EllipsoidProperties& properties);
     float getMenuWidth();
     bool getMenuEnabled() { return mIsMenuEnabled; }
     InteractionType getInteractionType() { return mInteractionType; }
@@ -28,7 +28,7 @@ private:
     InteractionType mInteractionType{};
 };
 
-inline void Menu::renderMenu()
+inline void Menu::renderMenu(EllipsoidProperties& properties)
 {
     mIsMenuEnabled = false;
 
@@ -61,18 +61,19 @@ inline void Menu::renderMenu()
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::SliderFloat("a", &a, 0.0f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderFloat("b", &b, 0.0f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderFloat("c", &c, 0.1f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderFloat("scale", &scaleObj, 0.1f, 1.0f);                    isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("a", &properties.a, 0.0f, 10.0f);                      isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("b", &properties.b, 0.0f, 10.0f);                      isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("c", &properties.c, 0.1f, 10.0f);                      isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("scale", &properties.scaleFactor, 0.1f, 1.0f);         isUIclicked |= ImGui::IsItemActive();
 
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::SliderFloat("m", &m, 0.1f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderInt("accuracy", &startingAccuracy, minFragmentSize, 128); isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("m", &properties.m, 0.1f, 10.0f);                      isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderInt("accuracy", &properties.accuracy, minFragmentSize, 128); isUIclicked |= ImGui::IsItemActive();
     }
+
     ImGui::End();
 }
 
