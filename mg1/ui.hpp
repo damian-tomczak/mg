@@ -7,6 +7,11 @@
 
 #include <iostream>
 
+enum class InteractionType
+{
+    MOVE,
+    ROTATE
+};
 
 class Menu
 {
@@ -19,6 +24,7 @@ public:
 
 private:
     bool mIsMenuEnabled = false;
+    InteractionType mInteraction;
 };
 
 inline void Menu::renderMenu()
@@ -36,14 +42,28 @@ inline void Menu::renderMenu()
     {
         mIsMenuEnabled = true;
 
-        ImGui::Text("Adjust Values");
+        ImGui::Text("Ellipsoid:");
 
         isUIclicked = false;
+
+        ImGui::Spacing();
+
+        static const char* comboItems[] = {"MOVE", "ROTATE"};
+
+        if (ImGui::Combo("InteractionType", reinterpret_cast<int*>(&mInteraction),
+            comboItems, IM_ARRAYSIZE(comboItems)))
+        {
+            isUIclicked = true;
+        }
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
 
         ImGui::SliderFloat("a", &a, 0.0f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
         ImGui::SliderFloat("b", &b, 0.0f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
         ImGui::SliderFloat("c", &c, 0.1f, 10.0f);                              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderFloat("scaleObj", &scaleObj, 0.0f, 10.0f);                isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("scale", &scaleObj, 0.1f, 1.0f);                    isUIclicked |= ImGui::IsItemActive();
 
         ImGui::Spacing();
         ImGui::Separator();
