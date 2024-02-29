@@ -1,5 +1,7 @@
 #include "rendering.hpp"
 
+#include <thread>
+
 Menu menu;
 
 bool shouldReRender()
@@ -57,12 +59,15 @@ int main(int argc, char* argv[])
 
     ImVec4 clearColor{0.45f, 0.55f, 0.60f, 1.00f};
 
-    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, windowWidth, windowHeight);
-    Uint32* pixels;
-    int pitch;
+    SDL_Texture* previousTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, windowWidth, windowHeight);
+    SDL_Texture* newTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, windowWidth, windowHeight);
+
+    int accuracy = startingAccuracy;
 
     bool isDragging = false;
     int lastMouseX, lastMouseY;
+
+    std::thread ellipsoidDrawing = std::thread(drawElipsoid, newTexture, accuracy);
 
     bool end = false;
     while (!end)
@@ -146,31 +151,39 @@ int main(int argc, char* argv[])
 
         if (reRender || (accuracy >= minFragmentSize) || isUIclicked)
         {
-            SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
-
             if (reRender || isUIclicked)
             {
                 accuracy = startingAccuracy;
             }
 
-            int totalBytes = pitch * windowHeight;
-            memset(pixels, 0, totalBytes);
+            if (isFinished)
+            {
+                ellipsoidDrawing.join();
+                isFinished = false;
 
-            processFragments(0, 0, windowWidth, windowHeight, accuracy, pixels);
+                SDL_SetRenderTarget(renderer, previousTexture);
 
-            SDL_UnlockTexture(texture);
+                SDL_RenderCopy(renderer, newTexture, nullptr, nullptr);
 
-            accuracy--;
+                SDL_SetRenderTarget(renderer, nullptr);
+
+                ellipsoidDrawing = std::thread(drawElipsoid, newTexture, accuracy);
+                accuracy--;
+            }
+
         }
 
-        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+        SDL_RenderCopy(renderer, previousTexture, nullptr, nullptr);
 
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 
         SDL_RenderPresent(renderer);
     }
 
-    SDL_DestroyTexture(texture);
+    ellipsoidDrawing.join();
+
+    SDL_DestroyTexture(previousTexture);
+    SDL_DestroyTexture(newTexture);
 
     ImGui_ImplSDLRenderer2_Shutdown();
     ImGui_ImplSDL2_Shutdown();

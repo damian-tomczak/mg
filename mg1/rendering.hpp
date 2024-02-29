@@ -6,6 +6,8 @@
 #include "SDL.h"
 
 #include <algorithm>
+#include <thread>
+#include <atomic>
 
 inline glm::vec4 computeColorAtCenter(int centerX, int centerY)
 {
@@ -81,4 +83,30 @@ inline void processFragments(int startX, int startY, int fragmentWidth, int frag
     processFragments(startX + halfWidth, startY, fragmentWidth - halfWidth, halfHeight, accuracy, upixels);
     processFragments(startX, startY + halfHeight, halfWidth, fragmentHeight - halfHeight, accuracy, upixels);
     processFragments(startX + halfWidth, startY + halfHeight, fragmentWidth - halfWidth, fragmentHeight - halfHeight, accuracy, upixels);
+}
+
+bool isFinished = false;
+
+inline void drawElipsoid(SDL_Texture* texture, int accuracy)
+{
+    std::cout << std::this_thread::get_id() << " started " <<  accuracy << "\n";
+    Uint32* pixels;
+    int pitch;
+
+    if (SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels), &pitch) < 0)
+    {
+        return;
+    }
+
+    int totalBytes = pitch * windowHeight;
+    memset(pixels, 0, totalBytes);
+
+    processFragments(0, 0, windowWidth, windowHeight, accuracy, pixels);
+
+    SDL_UnlockTexture(texture);
+
+    isFinished = true;
+
+    std::cout << std::this_thread::get_id() << " finished " << accuracy << "\n";
+
 }

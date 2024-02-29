@@ -13,7 +13,6 @@ inline int minFragmentSize = 1;
 
 inline float a = 0.5f, b = 1.0f, c = 1.5f, scaleObj = 0.2f, m = 4.0f;
 inline int startingAccuracy = 128;
-inline int accuracy = startingAccuracy;
 
 inline constexpr float floatDiff = 0.0001f;
 
