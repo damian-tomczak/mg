@@ -46,11 +46,7 @@ inline glm::vec4 AdaptiveRenderer::computeColorAtCenter(int centerX, int centerY
 
     if (std::isnan(z))
     {
-        return glm::vec4{1.0f, 0.0f, 0.0f, 1.0f};
-    }
-    else
-    {
-        return glm::vec4{0.0f, 1.0f, 0.0f, 1.0f};
+        return glm::vec4{0.639f, 0.965f, 1.0f, 1.0f};
     }
 
     glm::vec3 point = {normalizedX, normalizedY, z};

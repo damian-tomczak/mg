@@ -2,8 +2,6 @@
 
 #include <thread>
 
-Menu menu;
-
 int main(int argc, char* argv[])
 {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
@@ -24,6 +22,9 @@ int main(int argc, char* argv[])
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
 
+    float mouseSensitivity = 1.5f;
+    Menu menu{mouseSensitivity};
+
     ImVec4 clearColor{0.45f, 0.55f, 0.60f, 1.00f};
 
     SDL_Texture* previousTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, windowWidth, windowHeight);
@@ -40,9 +41,16 @@ int main(int argc, char* argv[])
 
     std::thread ellipsoidDrawing = std::thread(&AdaptiveRenderer::drawElipsoid, &adaptiveRenderer, newTexture, accuracyCounter, properties);
 
+    Uint32 previousTime = SDL_GetTicks();
+    float deltaTime{};
+
     bool end = false;
     while (!end)
     {
+        Uint32 currentTime = SDL_GetTicks();
+        deltaTime = (currentTime - previousTime) / 1000.0f;
+        previousTime = currentTime;
+
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
@@ -77,21 +85,19 @@ int main(int argc, char* argv[])
                         break;
                     }
 
-                    int dx = mouseX - lastMouseX;
-                    int dy = mouseY - lastMouseY;
-
-                    // TODO: deltaTime
+                    float dx = (mouseX - lastMouseX) * mouseSensitivity * deltaTime;
+                    float dy = (mouseY - lastMouseY) * mouseSensitivity * deltaTime;
 
                     InteractionType interactionType = menu.getInteractionType();
                     switch(interactionType)
                     {
                     case InteractionType::MOVE:
-                        properties.position.x += dx * mouseSensitivity;
-                        properties.position.y += -dy * mouseSensitivity;
+                        properties.position.x += dx;
+                        properties.position.y += dy;
                         break;
                     case InteractionType::ROTATE:
-                        properties.rotation.x += dx * mouseSensitivity;
-                        properties.rotation.y += -dy * mouseSensitivity;
+                        ////properties.rotation.x += dx;
+                        //properties.rotation.y += dx;
                         break;
                     default:
                         assert(false);
@@ -108,7 +114,7 @@ int main(int argc, char* argv[])
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        menu.renderMenu(properties);
+        menu.renderMenu(properties, deltaTime);
 
         SDL_SetRenderDrawColor(renderer,
             static_cast<Uint8>(clearColor.x * 255),

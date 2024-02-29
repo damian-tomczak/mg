@@ -4,8 +4,6 @@
 
 inline constexpr float floatDiff = 0.0001f;
 
-inline float mouseSensitivity = 0.005f;
-
 inline bool debug = false;
 
 inline int windowWidth = 1280;

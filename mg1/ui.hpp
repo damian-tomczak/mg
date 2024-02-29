@@ -6,6 +6,7 @@
 #include "globals.hpp"
 
 #include <iostream>
+#include <string>
 
 enum class InteractionType
 {
@@ -16,9 +17,10 @@ enum class InteractionType
 class Menu
 {
 public:
-    Menu() = default;
+    Menu(float& mouseSensitivty) : mMouseSensitivity{mouseSensitivty}
+    {}
 
-    void renderMenu(EllipsoidProperties& properties);
+    void renderMenu(EllipsoidProperties& properties, float deltaTime);
     float getMenuWidth();
     bool getMenuEnabled() { return mIsMenuEnabled; }
     InteractionType getInteractionType() { return mInteractionType; }
@@ -26,9 +28,10 @@ public:
 private:
     bool mIsMenuEnabled = false;
     InteractionType mInteractionType{};
+    float& mMouseSensitivity;
 };
 
-inline void Menu::renderMenu(EllipsoidProperties& properties)
+inline void Menu::renderMenu(EllipsoidProperties& properties, float deltaTime)
 {
     mIsMenuEnabled = false;
 
@@ -51,11 +54,7 @@ inline void Menu::renderMenu(EllipsoidProperties& properties)
 
         static const char* comboItems[] = {"MOVE", "ROTATE"};
 
-        if (ImGui::Combo("##InteractionType", reinterpret_cast<int*>(&mInteractionType),
-            comboItems, IM_ARRAYSIZE(comboItems)))
-        {
-            isUIclicked = true;
-        }
+        ImGui::Combo("##InteractionType", reinterpret_cast<int*>(&mInteractionType), comboItems, IM_ARRAYSIZE(comboItems));
 
         ImGui::Spacing();
         ImGui::Separator();
@@ -72,6 +71,16 @@ inline void Menu::renderMenu(EllipsoidProperties& properties)
 
         ImGui::SliderFloat("m", &properties.m, 0.1f, 10.0f);                      isUIclicked |= ImGui::IsItemActive();
         ImGui::SliderInt("accuracy", &properties.accuracy, minFragmentSize, 128); isUIclicked |= ImGui::IsItemActive();
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        ImGui::Text("Mouse sensitivity: ");
+        ImGui::SliderFloat("##mouseSensivity", &mMouseSensitivity, 0.1f, 10.0f);
+
+        ImGui::Text(("DeltaTime: " + std::to_string(deltaTime)).c_str());
+
     }
 
     ImGui::End();
