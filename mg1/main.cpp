@@ -105,8 +105,19 @@ int main(int argc, char* argv[])
                     int dy = mouseY - lastMouseY;
 
                     // TODO: deltaTime
-                    objPos.x += dx * mouseSensitivity;
-                    objPos.y += -dy * mouseSensitivity;
+
+                    InteractionType interactionType = menu.getInteractionType();
+                    switch(interactionType)
+                    {
+                    case InteractionType::MOVE:
+                        objPos.x += dx * mouseSensitivity;
+                        objPos.y += -dy * mouseSensitivity;
+                        break;
+                    case InteractionType::ROTATE:
+                        break;
+                    default:
+                        assert(false);
+                    }
 
                     lastMouseX = mouseX;
                     lastMouseY = mouseY;

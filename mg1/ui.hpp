@@ -21,10 +21,11 @@ public:
     void renderMenu();
     float getMenuWidth();
     bool getMenuEnabled() { return mIsMenuEnabled; }
+    InteractionType getInteractionType() { return mInteractionType; }
 
 private:
     bool mIsMenuEnabled = false;
-    InteractionType mInteraction;
+    InteractionType mInteractionType{};
 };
 
 inline void Menu::renderMenu()
@@ -50,7 +51,7 @@ inline void Menu::renderMenu()
 
         static const char* comboItems[] = {"MOVE", "ROTATE"};
 
-        if (ImGui::Combo("InteractionType", reinterpret_cast<int*>(&mInteraction),
+        if (ImGui::Combo("##InteractionType", reinterpret_cast<int*>(&mInteractionType),
             comboItems, IM_ARRAYSIZE(comboItems)))
         {
             isUIclicked = true;
