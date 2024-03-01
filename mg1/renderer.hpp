@@ -9,11 +9,11 @@
 #include <thread>
 #include <atomic>
 
-std::atomic<bool> isFinished;
-
 class AdaptiveRenderer
 {
 public:
+    static constexpr float adaptiveThreshold = 0.1f;
+
     AdaptiveRenderer() = default;
 
     void drawElipsoid(SDL_Texture* texture, int accuracy, const EllipsoidProperties& newProperties);
@@ -113,8 +113,6 @@ inline void AdaptiveRenderer::drawElipsoid(SDL_Texture* texture, int accuracy, c
     processFragments(0, 0, windowWidth, windowHeight, accuracy, pixels, properties);
 
     SDL_UnlockTexture(texture);
-
-    isFinished = true;
 
     std::cout << std::this_thread::get_id() << " finished " << accuracy << "\n";
 

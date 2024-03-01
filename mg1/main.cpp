@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
 
-    float mouseSensitivity = 1.5f;
+    float mouseSensitivity = 4.5f;
     Menu menu{mouseSensitivity};
 
     ImVec4 clearColor{0.45f, 0.55f, 0.60f, 1.00f};
@@ -39,7 +39,8 @@ int main(int argc, char* argv[])
     bool isDragging = false;
     int lastMouseX, lastMouseY;
 
-    std::thread ellipsoidDrawing = std::thread(&AdaptiveRenderer::drawElipsoid, &adaptiveRenderer, newTexture, accuracyCounter, properties);
+    adaptiveRenderer.drawElipsoid(newTexture, accuracyCounter, properties);
+    //std::thread ellipsoidDrawing = std::thread(&AdaptiveRenderer::drawElipsoid, &adaptiveRenderer, newTexture, accuracyCounter, properties);
 
     Uint32 previousTime = SDL_GetTicks();
     float deltaTime{};
@@ -99,8 +100,8 @@ int main(int argc, char* argv[])
                         properties.position.y += dy;
                         break;
                     case InteractionType::ROTATE:
-                        ////properties.rotation.x += dx;
-                        //properties.rotation.y += dx;
+                        //properties.rotation.x += dx;
+                        properties.rotation.y += dx;
                         break;
                     default:
                         assert(false);
@@ -137,28 +138,18 @@ int main(int argc, char* argv[])
             accuracyCounter = properties.accuracy;
         }
 
-        if (reRender || (accuracyCounter >= minFragmentSize))
+        if (reRender || ((deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) && (accuracyCounter >= minFragmentSize)))
         {
-            if (isFinished)
-            {
-                ellipsoidDrawing.join();
-                isFinished = false;
+            SDL_SetRenderTarget(renderer, previousTexture);
 
-                SDL_SetRenderTarget(renderer, previousTexture);
+            SDL_RenderCopy(renderer, newTexture, nullptr, nullptr);
 
-                SDL_RenderCopy(renderer, newTexture, nullptr, nullptr);
+            SDL_SetRenderTarget(renderer, nullptr);
 
-                SDL_SetRenderTarget(renderer, nullptr);
+            adaptiveRenderer.drawElipsoid(newTexture, accuracyCounter, properties);
 
-                ellipsoidDrawing = std::thread(&AdaptiveRenderer::drawElipsoid, &adaptiveRenderer, newTexture, accuracyCounter, properties);
+            accuracyCounter--;
 
-                accuracyCounter -= accuracyCounter != 2 ? 2 : 1;
-            }
-
-        }
-
-        if (isFinished)
-        {
             deltaPreviousDrawTime = (currentTime - previousDrawTime) / 1000.0f;
             previousDrawTime = currentTime;
         }
@@ -169,8 +160,6 @@ int main(int argc, char* argv[])
 
         SDL_RenderPresent(renderer);
     }
-
-    ellipsoidDrawing.join();
 
     SDL_DestroyTexture(previousTexture);
     SDL_DestroyTexture(newTexture);
