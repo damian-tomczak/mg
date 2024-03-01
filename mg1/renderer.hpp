@@ -9,30 +9,20 @@
 #include <thread>
 #include <atomic>
 
+std::atomic<bool> isFinished;
+
 class AdaptiveRenderer
 {
 public:
     AdaptiveRenderer() = default;
 
-    bool shouldReRender(const EllipsoidProperties& newProperties);
     void drawElipsoid(SDL_Texture* texture, int accuracy, const EllipsoidProperties& newProperties);
 
 private:
     glm::vec4 computeColorAtCenter(int centerX, int centerY, const EllipsoidProperties& properties);
     void calculateFragment(int startX, int startY, int endX, int endY, Uint32* upixels, const EllipsoidProperties& properties);
     void processFragments(int startX, int startY, int fragmentWidth, int fragmentHeight, int accuracy, Uint32* upixels, const EllipsoidProperties& properties);
-
-    EllipsoidProperties previousProperties;
 };
-
-inline bool AdaptiveRenderer::shouldReRender(const EllipsoidProperties& newProperties)
-{
-    bool result = newProperties != previousProperties;
-
-    previousProperties = newProperties;
-
-    return result;
-}
 
 inline glm::vec4 AdaptiveRenderer::computeColorAtCenter(int centerX, int centerY, const EllipsoidProperties& properties)
 {
@@ -105,8 +95,6 @@ inline void AdaptiveRenderer::processFragments(int startX, int startY, int fragm
     processFragments(startX, startY + halfHeight, halfWidth, fragmentHeight - halfHeight, accuracy, upixels, properties);
     processFragments(startX + halfWidth, startY + halfHeight, fragmentWidth - halfWidth, fragmentHeight - halfHeight, accuracy, upixels, properties);
 }
-
-bool isFinished = false;
 
 inline void AdaptiveRenderer::drawElipsoid(SDL_Texture* texture, int accuracy, const EllipsoidProperties& properties)
 {

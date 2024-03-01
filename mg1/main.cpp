@@ -44,6 +44,9 @@ int main(int argc, char* argv[])
     Uint32 previousTime = SDL_GetTicks();
     float deltaTime{};
 
+    Uint32 previousDrawTime = SDL_GetTicks();
+    float deltaPreviousDrawTime{};
+
     bool end = false;
     while (!end)
     {
@@ -86,7 +89,7 @@ int main(int argc, char* argv[])
                     }
 
                     float dx = (mouseX - lastMouseX) * mouseSensitivity * deltaTime;
-                    float dy = (mouseY - lastMouseY) * mouseSensitivity * deltaTime;
+                    float dy = -(mouseY - lastMouseY) * mouseSensitivity * deltaTime;
 
                     InteractionType interactionType = menu.getInteractionType();
                     switch(interactionType)
@@ -114,7 +117,7 @@ int main(int argc, char* argv[])
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        menu.renderMenu(properties, deltaTime);
+        menu.renderMenu(properties, deltaPreviousDrawTime);
 
         SDL_SetRenderDrawColor(renderer,
             static_cast<Uint8>(clearColor.x * 255),
@@ -126,15 +129,16 @@ int main(int argc, char* argv[])
 
         ImGui::Render();
 
-        bool reRender = adaptiveRenderer.shouldReRender(properties);
-
-        if (reRender || (accuracyCounter >= minFragmentSize) || isUIclicked)
+        static EllipsoidProperties previousProperties = properties;
+        bool reRender = (properties != previousProperties) || isUIclicked;
+        if (reRender)
         {
-            if (reRender || isUIclicked)
-            {
-                accuracyCounter = properties.accuracy;
-            }
+            previousProperties = properties;
+            accuracyCounter = properties.accuracy;
+        }
 
+        if (reRender || (accuracyCounter >= minFragmentSize))
+        {
             if (isFinished)
             {
                 ellipsoidDrawing.join();
@@ -147,9 +151,16 @@ int main(int argc, char* argv[])
                 SDL_SetRenderTarget(renderer, nullptr);
 
                 ellipsoidDrawing = std::thread(&AdaptiveRenderer::drawElipsoid, &adaptiveRenderer, newTexture, accuracyCounter, properties);
-                accuracyCounter--;
+
+                accuracyCounter -= accuracyCounter != 2 ? 2 : 1;
             }
 
+        }
+
+        if (isFinished)
+        {
+            deltaPreviousDrawTime = (currentTime - previousDrawTime) / 1000.0f;
+            previousDrawTime = currentTime;
         }
 
         SDL_RenderCopy(renderer, previousTexture, nullptr, nullptr);
