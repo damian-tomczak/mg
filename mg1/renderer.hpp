@@ -13,6 +13,7 @@ class AdaptiveRenderer
 {
 public:
     static constexpr float adaptiveThreshold = 0.1f;
+    static constexpr glm::vec4 backgroundColor{0.639f, 0.965f, 1.0f, 1.0f};
 
     AdaptiveRenderer() = default;
 
@@ -29,18 +30,20 @@ inline glm::vec4 AdaptiveRenderer::computeColorAtCenter(int centerX, int centerY
     float normalizedX = (static_cast<float>(centerX) / windowWidth - 0.5f);
     float normalizedY = (0.5f - static_cast<float>(centerY) / windowHeight);
 
-    float z = elipsoidZ(normalizedX, normalizedY,
+    glm::mat4 dPrim = calculateDPrim(
         properties.position.x, properties.position.y, properties.position.z,
         properties.scaleFactor, properties.scaleFactor, properties.scaleFactor,
         properties.rotation.x, properties.rotation.y, properties.rotation.z, properties.a, properties.b, properties.c);
 
+    float z = elipsoidZ(normalizedX, normalizedY, dPrim);
+
     if (std::isnan(z))
     {
-        return glm::vec4{0.639f, 0.965f, 1.0f, 1.0f};
+        return backgroundColor;
     }
 
     glm::vec3 point = {normalizedX, normalizedY, z};
-    glm::vec3 normal = normalVector(point.x, point.y, point.z, properties.a, properties.b, properties.c);
+    glm::vec3 normal = normalVector(point.x, point.y, point.z, dPrim);
 
     glm::vec3 ambient = lightColor * ambientStrength;
 
@@ -58,7 +61,7 @@ inline glm::vec4 AdaptiveRenderer::computeColorAtCenter(int centerX, int centerY
     finalColor.y = std::clamp(finalColor.y, 0.f, 1.f);
     finalColor.z = std::clamp(finalColor.z, 0.f, 1.f);
 
-    return glm::vec4{finalColor.x, finalColor.y, finalColor.z, 1.f};
+    return {finalColor.x, finalColor.y, finalColor.z, 1.f};
 }
 
 inline void AdaptiveRenderer::calculateFragment(int startX, int startY, int endX, int endY, Uint32* upixels, const EllipsoidProperties& properties)

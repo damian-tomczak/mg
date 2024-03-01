@@ -9,7 +9,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/string_cast.hpp"
 
-inline float elipsoidZ(float x, float y,
+inline glm::mat4 calculateDPrim(
     float tx, float ty, float tz,
     float sx, float sy, float sz,
     float rx, float ry, float rz,
@@ -54,11 +54,14 @@ inline float elipsoidZ(float x, float y,
     glm::mat4 MInverse = glm::inverse(MMatrix);
     glm::mat4 MInverseTranspose = glm::transpose(MInverse);
 
-    glm::mat4 DPrim = MInverseTranspose * diagonalMatrix * MInverse;
+    return MInverseTranspose * diagonalMatrix * MInverse;
+}
 
-    float A = DPrim[2][2];
-    float B = DPrim[2][3] + DPrim[3][2] + DPrim[0][2] * x + DPrim[2][0] * x + DPrim[1][2] * y + DPrim[2][1] * y;
-    float C = DPrim[3][3] + DPrim[0][0] * x * x + DPrim[0][3] * x + DPrim[3][0] * x + DPrim[1][1] * y * y + DPrim[1][3] * y + DPrim[3][1] * y + DPrim[0][1] * x * y + DPrim[1][0] * x * y;
+inline float elipsoidZ(float x, float y, const glm::mat4& dPrim)
+{
+    float A = dPrim[2][2];
+    float B = dPrim[2][3] + dPrim[3][2] + dPrim[0][2] * x + dPrim[2][0] * x + dPrim[1][2] * y + dPrim[2][1] * y;
+    float C = dPrim[3][3] + dPrim[0][0] * x * x + dPrim[0][3] * x + dPrim[3][0] * x + dPrim[1][1] * y * y + dPrim[1][3] * y + dPrim[3][1] * y + dPrim[0][1] * x * y + dPrim[1][0] * x * y;
 
     float discriminant = B * B - 4 * A * C;
 
@@ -68,52 +71,13 @@ inline float elipsoidZ(float x, float y,
     return z1 > z2 ? z1 : z2;
 }
 
-inline float partialZPartialX(float x, float y, float a, float b, float c)
+inline glm::vec3 normalVector(float x, float y, float z, const glm::mat4& dPrim)
 {
-    assert(c != 0);
+    double df_dx = 2 * dPrim[0][0] * x + dPrim[1][0] * y + dPrim[1][0] * y + dPrim[2][0] * z + dPrim[2][0] * z + dPrim[0][3] + dPrim[3][0];
+    double df_dy = dPrim[1][0] * x + dPrim[1][0] * x + 2 * dPrim[1][1] * y + dPrim[1][2] * z + dPrim[1][3] + dPrim[2][1] * z + dPrim[3][1];
+    double df_dz = dPrim[1][2] * y + dPrim[2][0] * x + dPrim[2][0] * x + dPrim[2][1] * y + 2 * dPrim[2][2] * z + dPrim[2][3] + dPrim[3][2];
 
-    float numerator = -a * x * sqrt(-((a * x * x + b * y * y - 1) / c));
-    float denominator = -(a * x * x + b * y * y - 1);
+    const glm::vec3 normal{df_dx, df_dy, df_dz};
 
-    return numerator / denominator;
-}
-
-inline float partialZPartialY(float x, float y, float a, float b, float c)
-{
-    assert(c != 0);
-
-    float numerator = -b * y * sqrt(-((a * x * x + b * y * y - 1) / c));
-    float denominator = -(a * x * x + b * y * y - 1);
-
-    return numerator / denominator;
-}
-
-inline float gradientMagnitude(float x, float y, float z, float a, float b, float c)
-{
-    float dx = partialZPartialX(x, y, a, b, c);
-    float dy = partialZPartialY(x, y, a, b, c);
-
-    return sqrt(dx * dx + dy * dy);
-}
-
-inline glm::vec3 normalVector(float x, float y, float z, float a, float b, float c)
-{
-    //float dx = partialZPartialX(x, y, a, b, c);
-    //float dy = partialZPartialY(x, y, a, b, c);
-    //float mag = gradientMagnitude(x, y, z, a, b, c);
-
-    //float nx = dx / mag;
-    //float ny = dy / mag;
-
-    //float nz = 1 / mag;
-
-    //return {nx, ny, nz};
-
-    glm::vec3 grad = { 2 * a * x, 2 * b * y, 2 * c * z };
-
-    float magnitude = sqrt(grad.x * grad.x + grad.y * grad.y + grad.z * grad.z);
-
-    glm::vec3 normal = { grad.x / magnitude, grad.y / magnitude, grad.z / magnitude };
-
-    return normal;
+    return glm::normalize(normal);
 }
