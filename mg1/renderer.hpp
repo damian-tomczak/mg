@@ -101,7 +101,6 @@ inline void AdaptiveRenderer::processFragments(int startX, int startY, int fragm
 
 inline void AdaptiveRenderer::drawElipsoid(SDL_Texture* texture, int accuracy, const EllipsoidProperties& properties)
 {
-    std::cout << std::this_thread::get_id() << " started " <<  accuracy << "\n";
     Uint32* pixels;
     int pitch;
 
@@ -116,7 +115,4 @@ inline void AdaptiveRenderer::drawElipsoid(SDL_Texture* texture, int accuracy, c
     processFragments(0, 0, windowWidth, windowHeight, accuracy, pixels, properties);
 
     SDL_UnlockTexture(texture);
-
-    std::cout << std::this_thread::get_id() << " finished " << accuracy << "\n";
-
 }

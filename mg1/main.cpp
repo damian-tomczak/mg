@@ -1,7 +1,5 @@
 #include "renderer.hpp"
 
-#include <thread>
-
 int main(int argc, char* argv[])
 {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
@@ -40,7 +38,6 @@ int main(int argc, char* argv[])
     int lastMouseX, lastMouseY;
 
     adaptiveRenderer.drawElipsoid(newTexture, accuracyCounter, properties);
-    //std::thread ellipsoidDrawing = std::thread(&AdaptiveRenderer::drawElipsoid, &adaptiveRenderer, newTexture, accuracyCounter, properties);
 
     Uint32 previousTime = SDL_GetTicks();
     float deltaTime{};
@@ -100,7 +97,7 @@ int main(int argc, char* argv[])
                         properties.position.y += dy;
                         break;
                     case InteractionType::ROTATE:
-                        //properties.rotation.x += dx;
+                        properties.rotation.x += dy;
                         properties.rotation.y += dx;
                         break;
                     default:
@@ -136,6 +133,8 @@ int main(int argc, char* argv[])
         {
             previousProperties = properties;
             accuracyCounter = properties.accuracy;
+            deltaPreviousDrawTime = 0.f;
+            previousDrawTime = currentTime;
         }
 
         if (reRender || ((deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) && (accuracyCounter >= minFragmentSize)))

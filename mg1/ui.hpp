@@ -81,6 +81,14 @@ inline void Menu::renderMenu(EllipsoidProperties& properties, float deltaTime)
 
         ImGui::Text(("DeltaTime: " + std::to_string(deltaTime)).c_str());
 
+        if (ImGui::Button("Reset ellipsoid"))
+        {
+            properties.position = glm::vec4(0.f);
+            properties.rotation = glm::vec4(0.f);
+
+            isUIclicked = true;
+        }
+
     }
 
     ImGui::End();
