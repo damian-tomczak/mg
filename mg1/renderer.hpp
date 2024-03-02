@@ -12,7 +12,7 @@
 class AdaptiveRenderer
 {
 public:
-    static constexpr float adaptiveThreshold = 0.1f;
+    inline static float adaptiveThreshold = 0.1f;
     static constexpr glm::vec4 backgroundColor{0.639f, 0.965f, 1.0f, 1.0f};
 
     AdaptiveRenderer() = default;

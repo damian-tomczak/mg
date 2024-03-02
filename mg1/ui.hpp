@@ -4,6 +4,7 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
 #include "globals.hpp"
+#include "renderer.hpp"
 
 #include <iostream>
 #include <string>
@@ -17,6 +18,8 @@ enum class InteractionType
 class Menu
 {
 public:
+    bool isUIclicked = false;
+
     Menu(float& mouseSensitivty) : mMouseSensitivity{mouseSensitivty}
     {}
 

@@ -33,5 +33,3 @@ struct EllipsoidProperties
 
     auto operator<=>(const EllipsoidProperties& other) const = default;
 };
-
-inline bool isUIclicked = false;

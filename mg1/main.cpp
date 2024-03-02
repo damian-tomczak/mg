@@ -1,5 +1,7 @@
 #include "renderer.hpp"
 
+#include <numbers>
+
 int main(int argc, char* argv[])
 {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
@@ -97,9 +99,13 @@ int main(int argc, char* argv[])
                         properties.position.y += dy;
                         break;
                     case InteractionType::ROTATE:
-                        properties.rotation.x += dy;
-                        properties.rotation.y += dx;
+                    {
+                        float radiansX = dx * std::numbers::pi_v<float> * 0.3f;
+                        float radiansY = dy * std::numbers::pi_v<float> * 0.3f;
+                        properties.rotation.x += radiansY;
+                        properties.rotation.y += radiansX;
                         break;
+                    }
                     default:
                         assert(false);
                     }
@@ -128,7 +134,7 @@ int main(int argc, char* argv[])
         ImGui::Render();
 
         static EllipsoidProperties previousProperties = properties;
-        bool reRender = (properties != previousProperties) || isUIclicked;
+        bool reRender = (properties != previousProperties) || menu.isUIclicked;
         if (reRender)
         {
             previousProperties = properties;
@@ -136,6 +142,12 @@ int main(int argc, char* argv[])
             deltaPreviousDrawTime = 0.f;
             previousDrawTime = currentTime;
         }
+
+        //float radiansX = std::numbers::pi_v<float> * 0.3;
+        //float radiansY = std::numbers::pi_v<float> * 0.3;
+        //properties.rotation.z += radiansX;
+        ////properties.rotation.y += radiansY;
+        //reRender = true;
 
         if (reRender || ((deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) && (accuracyCounter >= minFragmentSize)))
         {
