@@ -134,11 +134,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="equations.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\mg\math.hpp" />
-    <ClInclude Include="equations.hpp" />
+    <ClInclude Include="equations.h" />
     <ClInclude Include="globals.hpp" />
     <ClInclude Include="renderer.hpp" />
     <ClInclude Include="ui.hpp" />

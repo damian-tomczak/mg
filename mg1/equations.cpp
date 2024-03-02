@@ -1,19 +1,14 @@
-#pragma once
+#include "equations.h"
 
 #include <cassert>
 #include <iostream>
 #include <fstream>
 
-#include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/string_cast.hpp"
 
-inline glm::mat4 calculateDPrim(
-    float tx, float ty, float tz,
-    float sx, float sy, float sz,
-    float rx, float ry, float rz,
-    float a, float b, float c)
+glm::mat4 calculateDPrim(glm::vec3 t, glm::vec3 s, glm::vec3 r, float a, float b, float c)
 {
     glm::mat4 diagonalMatrix = glm::mat4(0.f);
     diagonalMatrix[0][0] = a;
@@ -21,13 +16,13 @@ inline glm::mat4 calculateDPrim(
     diagonalMatrix[2][2] = c;
     diagonalMatrix[3][3] = -1;
 
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(sx, sy, sz));
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(s.x, s.y, s.z));
 
-    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(tx, ty, tz));
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(t.x, t.y, t.z));
 
-    float alpha = glm::radians(rx);
-    float beta = glm::radians(ry);
-    float gamma = glm::radians(rz);
+    float alpha = glm::radians(r.x);
+    float beta = glm::radians(r.y);
+    float gamma = glm::radians(r.z);
 
     glm::mat4 rotateX(1.0f);
     rotateX[1][1] = cos(alpha);
@@ -57,7 +52,7 @@ inline glm::mat4 calculateDPrim(
     return MInverseTranspose * diagonalMatrix * MInverse;
 }
 
-inline float elipsoidZ(float x, float y, const glm::mat4& dPrim)
+float elipsoidZ(float x, float y, const glm::mat4& dPrim)
 {
     float A = dPrim[2][2];
     float B = dPrim[2][3] + dPrim[3][2] + dPrim[0][2] * x + dPrim[2][0] * x + dPrim[1][2] * y + dPrim[2][1] * y;
@@ -71,11 +66,11 @@ inline float elipsoidZ(float x, float y, const glm::mat4& dPrim)
     return z1 > z2 ? z1 : z2;
 }
 
-inline glm::vec3 normalVector(float x, float y, float z, const glm::mat4& dPrim)
+glm::vec3 normalVector(glm::vec3 v, const glm::mat4& dPrim)
 {
-    double df_dx = 2 * dPrim[0][0] * x + dPrim[1][0] * y + dPrim[1][0] * y + dPrim[2][0] * z + dPrim[2][0] * z + dPrim[0][3] + dPrim[3][0];
-    double df_dy = dPrim[1][0] * x + dPrim[1][0] * x + 2 * dPrim[1][1] * y + dPrim[1][2] * z + dPrim[1][3] + dPrim[2][1] * z + dPrim[3][1];
-    double df_dz = dPrim[1][2] * y + dPrim[2][0] * x + dPrim[2][0] * x + dPrim[2][1] * y + 2 * dPrim[2][2] * z + dPrim[2][3] + dPrim[3][2];
+    double df_dx = 2 * dPrim[0][0] * v.x + dPrim[1][0] * v.y + dPrim[1][0] * v.y + dPrim[2][0] * v.z + dPrim[2][0] * v.z + dPrim[0][3] + dPrim[3][0];
+    double df_dy = dPrim[1][0] * v.x + dPrim[1][0] * v.x + 2 * dPrim[1][1] * v.y + dPrim[1][2] * v.z + dPrim[1][3] + dPrim[2][1] * v.z + dPrim[3][1];
+    double df_dz = dPrim[1][2] * v.y + dPrim[2][0] * v.x + dPrim[2][0] * v.x + dPrim[2][1] * v.y + 2 * dPrim[2][2] * v.z + dPrim[2][3] + dPrim[3][2];
 
     const glm::vec3 normal{df_dx, df_dy, df_dz};
 

@@ -18,12 +18,15 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="equations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\mg\math.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="equations.hpp">
+    <ClInclude Include="equations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="globals.hpp">

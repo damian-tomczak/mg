@@ -143,9 +143,10 @@ int main(int argc, char* argv[])
             previousDrawTime = currentTime;
         }
 
-        //float radiansX = std::numbers::pi_v<float> * 0.3;
-        //float radiansY = std::numbers::pi_v<float> * 0.3;
-        //properties.rotation.z += radiansX;
+        //float radiansX = std::numbers::pi_v<float> *0.3;
+        //float radiansY = std::numbers::pi_v<float> *0.3;
+        //properties.rotation.x += radiansX;
+        //properties.rotation.x += radiansX;
         ////properties.rotation.y += radiansY;
         //reRender = true;
 

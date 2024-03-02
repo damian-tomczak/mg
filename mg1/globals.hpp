@@ -2,6 +2,8 @@
 
 #include "glm/glm.hpp"
 
+glm::vec4 backgroundColor{ 0.639f, 0.965f, 1.0f, 1.0f };
+
 inline constexpr float floatDiff = 0.0001f;
 
 inline bool debug = false;
