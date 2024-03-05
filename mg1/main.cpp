@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
 
-    float mouseSensitivity = 4.5f;
+    float mouseSensitivity = 20.5f;
     Menu menu{mouseSensitivity};
 
     ImVec4 clearColor{0.45f, 0.55f, 0.60f, 1.00f};
@@ -95,13 +95,13 @@ int main(int argc, char* argv[])
                     switch(interactionType)
                     {
                     case InteractionType::MOVE:
-                        properties.position.x += dx;
-                        properties.position.y += dy;
+                        properties.position.x += dx / 10.f;
+                        properties.position.y += dy / 10.f;
                         break;
                     case InteractionType::ROTATE:
                     {
-                        float radiansX = dx * std::numbers::pi_v<float> * 0.3f;
-                        float radiansY = dy * std::numbers::pi_v<float> * 0.3f;
+                        float radiansX = dx * std::numbers::pi_v<float> / 180.f;
+                        float radiansY = dy * std::numbers::pi_v<float> / 180.f;
                         properties.rotation.x += radiansY;
                         properties.rotation.y += radiansX;
                         break;
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
         //float radiansY = std::numbers::pi_v<float> *0.3;
         //properties.rotation.x += radiansX;
         //properties.rotation.x += radiansX;
-        ////properties.rotation.y += radiansY;
+        //properties.rotation.y += radiansX;
         //reRender = true;
 
         if (reRender || ((deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) && (accuracyCounter >= minFragmentSize)))

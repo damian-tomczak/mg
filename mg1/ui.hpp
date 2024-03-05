@@ -80,7 +80,7 @@ inline void Menu::renderMenu(EllipsoidProperties& properties, float deltaTime)
         ImGui::Spacing();
 
         ImGui::Text("Mouse sensitivity: ");
-        ImGui::SliderFloat("##mouseSensivity", &mMouseSensitivity, 0.1f, 10.0f);
+        ImGui::SliderFloat("##mouseSensivity", &mMouseSensitivity, 0.1f, 100.0f);
 
         ImGui::Text(("DeltaTime: " + std::to_string(deltaTime)).c_str());
 
