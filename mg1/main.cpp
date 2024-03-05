@@ -140,7 +140,6 @@ int main(int argc, char* argv[])
             previousProperties = properties;
             accuracyCounter = properties.accuracy;
             deltaPreviousDrawTime = 0.f;
-            previousDrawTime = currentTime;
         }
 
         //float radiansX = std::numbers::pi_v<float> *0.3;
@@ -152,6 +151,8 @@ int main(int argc, char* argv[])
 
         if (reRender || ((deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) && (accuracyCounter >= minFragmentSize)))
         {
+            previousDrawTime = SDL_GetTicks();
+
             SDL_SetRenderTarget(renderer, previousTexture);
 
             SDL_RenderCopy(renderer, newTexture, nullptr, nullptr);
@@ -162,8 +163,7 @@ int main(int argc, char* argv[])
 
             accuracyCounter--;
 
-            deltaPreviousDrawTime = (currentTime - previousDrawTime) / 1000.0f;
-            previousDrawTime = currentTime;
+            deltaPreviousDrawTime = (SDL_GetTicks() - previousDrawTime) / 1000.0f;
         }
 
         SDL_RenderCopy(renderer, previousTexture, nullptr, nullptr);
