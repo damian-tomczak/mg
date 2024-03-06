@@ -63,17 +63,17 @@ inline void Menu::renderMenu(EllipsoidProperties& properties, float deltaTime)
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::SliderFloat("a", &properties.a, 0.0f, 10.0f);              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderFloat("b", &properties.b, 0.0f, 10.0f);              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderFloat("c", &properties.c, 0.1f, 10.0f);              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderFloat("scale", &properties.scaleFactor, 0.1f, 1.0f); isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("a", &properties.a, 0.0f, 10.0f);                          isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("b", &properties.b, 0.0f, 10.0f);                          isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("c", &properties.c, 0.1f, 10.0f);                          isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("scale", &properties.scaleFactor, 0.1f, 1.0f);             isUIclicked |= ImGui::IsItemActive();
 
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::SliderFloat("m", &properties.m, 0.1f, 10.0f);              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderInt("accuracy", &properties.accuracy, 1, 9);         isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderFloat("m", &properties.m, 0.1f, 10.0f);                          isUIclicked |= ImGui::IsItemActive();
+        ImGui::SliderInt("accuracy", &properties.accuracy, blockSize, blockSize * blockSize); isUIclicked |= ImGui::IsItemActive();
 
         ImGui::Spacing();
         ImGui::Separator();

@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
         float radiansX = std::numbers::pi_v<float> *0.3;
         //float radiansY = std::numbers::pi_v<float> *0.3;
         //properties.rotation.x += radiansX;
-        //properties.rotation.x += radiansX;
+        properties.rotation.x += radiansX;
         //properties.rotation.y += radiansX;
         //reRender = true;
 

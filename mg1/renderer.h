@@ -14,7 +14,7 @@ inline SDL_PixelFormat* format;
 class AdaptiveRenderer
 {
 public:
-    inline static float adaptiveThreshold = 0.5f;
+    inline static float adaptiveThreshold = 10.f;
     static constexpr glm::vec4 backgroundColor{ 0.639f, 0.965f, 1.0f, 1.0f };
 
     AdaptiveRenderer() = default;
