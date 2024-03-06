@@ -43,49 +43,39 @@ glm::vec4 AdaptiveRenderer::computeColor(int centerX, int centerY, const Ellipso
 
 void AdaptiveRenderer::drawElipsoid(SDL_Texture* texture, int accuracy, const EllipsoidProperties& properties)
 {
-    int i = properties.accuracy - accuracy;
-
     Uint32* pixels;
     int pitch;
 
     assert(SDL_LockTexture(texture, nullptr, reinterpret_cast<void**>(&pixels), &pitch) == 0);
 
-    int blockCountX = windowWidth / blockSize;
-    int blockCountY = windowHeight / blockSize;
+    int blockCountX = windowWidth / accuracy;
+    int blockCountY = windowHeight / accuracy;
 
     glm::vec4 color{};
     Uint32 rawColor{};
+
+    int previousAccuracy = accuracy * 2;
 
     for (int blockY = 0; blockY < blockCountY; blockY++)
     {
         for (int blockX = 0; blockX < blockCountX; blockX++)
         {
-            bool fillRest{};
+            int x = blockX * accuracy;
+            int y = blockY * accuracy;
 
-            int x = blockX * blockSize;
-            int y = blockY * blockSize;
-
-            int iBlock = 0;
-
-            for (int fillY = y; fillY < y + blockSize && fillY < windowHeight; ++fillY)
+            for (int fillY = y; fillY < y + accuracy && fillY < windowHeight; ++fillY)
             {
-                for (int fillX = x; fillX < x + blockSize && fillX < windowWidth; ++fillX)
+                for (int fillX = x; fillX < x + accuracy && fillX < windowWidth; ++fillX)
                 {
-                    if (iBlock == i)
+                    if (fillY == y && fillX == x && ((fillX % previousAccuracy != 0) || (fillY % previousAccuracy != 0) || accuracy == startingAccuracy))
                     {
                         color = computeColor(fillX, fillY, properties);
                         rawColor = SDL_MapRGBA(format,
                             static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255),
                             static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
-                        fillRest = true;
                     }
 
-                    if (fillRest)
-                    {
-                        pixels[fillY * windowWidth + fillX] = rawColor;
-                    }
-
-                    iBlock++;
+                    pixels[fillY * windowWidth + fillX] = rawColor;
                 }
             }
         }

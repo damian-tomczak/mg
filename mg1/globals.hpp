@@ -19,7 +19,10 @@ inline glm::vec3 specularColor = glm::vec3(1.f);
 
 inline glm::vec3 viewPos = lightPos;
 
-inline constexpr int blockSize = 5;
+inline int blockSize = 4;
+
+inline int accuracyCounter = 2;
+inline int startingAccuracy = std::pow(2, startingAccuracy);
 
 struct EllipsoidProperties
 {

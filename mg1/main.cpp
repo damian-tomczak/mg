@@ -36,12 +36,12 @@ int main(int argc, char* argv[])
 
     EllipsoidProperties properties;
 
-    int accuracyCounter = properties.accuracy;
 
     bool isDragging = false;
     int lastMouseX, lastMouseY;
 
-    adaptiveRenderer.drawElipsoid(newTexture, accuracyCounter, properties);
+    adaptiveRenderer.drawElipsoid(newTexture, std::pow(2, accuracyCounter), properties);
+    accuracyCounter--;
 
     Uint32 previousTime = SDL_GetTicks();
     float deltaTime{};
@@ -140,7 +140,7 @@ int main(int argc, char* argv[])
         if (reRender)
         {
             previousProperties = properties;
-            accuracyCounter = properties.accuracy;
+            accuracyCounter = 2;
             deltaPreviousDrawTime = 0.f;
 
             Uint32* pixels;
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
         //properties.rotation.x += radiansX;
         //properties.rotation.y += radiansX;
 
-        if (reRender || ((deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) && (accuracyCounter > 0)))
+        if (reRender || (/*(deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) &&*/ (accuracyCounter >= 0)))
         {
             previousDrawTime = SDL_GetTicks();
 
@@ -164,9 +164,9 @@ int main(int argc, char* argv[])
 
             SDL_SetRenderTarget(renderer, nullptr);
 
-            adaptiveRenderer.drawElipsoid(newTexture, accuracyCounter, properties);
+            adaptiveRenderer.drawElipsoid(newTexture, std::pow(2, accuracyCounter), properties);
 
-            accuracyCounter -= blockSize;
+            accuracyCounter--;
 
             deltaPreviousDrawTime = (SDL_GetTicks() - previousDrawTime) / 1000.0f;
         }
