@@ -97,8 +97,8 @@ int main(int argc, char* argv[])
                     switch(interactionType)
                     {
                     case InteractionType::MOVE:
-                        properties.position.x += dx / 10.f;
-                        properties.position.y += dy / 10.f;
+                        properties.position.x += dx / 50.f;
+                        properties.position.y += dy / 50.f;
                         break;
                     case InteractionType::ROTATE:
                     {
@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
         float radiansX = std::numbers::pi_v<float> *0.3;
         //float radiansY = std::numbers::pi_v<float> *0.3;
         //properties.rotation.x += radiansX;
-        properties.rotation.x += radiansX;
+        //properties.rotation.x += radiansX;
         //properties.rotation.y += radiansX;
         //reRender = true;
 
