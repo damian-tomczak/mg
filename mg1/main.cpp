@@ -1,10 +1,12 @@
-#include "renderer.hpp"
+#include "renderer.h"
 
 #include <numbers>
 
 int main(int argc, char* argv[])
 {
     assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == 0);
+
+    format = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
 
     SDL_Window* window = SDL_CreateWindow("mg1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, 0);
     assert(window != nullptr);
@@ -140,16 +142,22 @@ int main(int argc, char* argv[])
             previousProperties = properties;
             accuracyCounter = properties.accuracy;
             deltaPreviousDrawTime = 0.f;
+
+            Uint32* pixels;
+            int pitch;
+            SDL_LockTexture(newTexture, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
+
+            SDL_UnlockTexture(newTexture);
         }
 
-        //float radiansX = std::numbers::pi_v<float> *0.3;
+        float radiansX = std::numbers::pi_v<float> *0.3;
         //float radiansY = std::numbers::pi_v<float> *0.3;
         //properties.rotation.x += radiansX;
         //properties.rotation.x += radiansX;
         //properties.rotation.y += radiansX;
         //reRender = true;
 
-        if (reRender || ((deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) && (accuracyCounter >= minFragmentSize)))
+        if (reRender || ((deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) && (accuracyCounter > 0)))
         {
             previousDrawTime = SDL_GetTicks();
 
@@ -161,7 +169,7 @@ int main(int argc, char* argv[])
 
             adaptiveRenderer.drawElipsoid(newTexture, accuracyCounter, properties);
 
-            accuracyCounter--;
+            accuracyCounter -= blockSize;
 
             deltaPreviousDrawTime = (SDL_GetTicks() - previousDrawTime) / 1000.0f;
         }

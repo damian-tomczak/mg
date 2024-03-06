@@ -21,6 +21,9 @@
     <ClCompile Include="equations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\mg\math.hpp">
@@ -35,7 +38,7 @@
     <ClInclude Include="ui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="renderer.hpp">
+    <ClInclude Include="renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
