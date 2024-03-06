@@ -42,7 +42,7 @@ glm::mat4 calculateDPrim(glm::vec3 t, glm::vec3 s, glm::vec3 r, float a, float b
     rotateZ[1][0] = sin(gamma);
     rotateZ[1][1] = cos(gamma);
 
-    glm::mat4 rotationMatrix = rotateZ * rotateY * rotateX;
+    glm::mat4 rotationMatrix = rotateX * rotateY * rotateZ;
 
     glm::mat4 MMatrix = scaleMatrix * rotationMatrix * rotationMatrix * translationMatrix;
 

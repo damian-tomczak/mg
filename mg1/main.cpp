@@ -150,12 +150,9 @@ int main(int argc, char* argv[])
             SDL_UnlockTexture(newTexture);
         }
 
-        float radiansX = std::numbers::pi_v<float> *0.3;
-        //float radiansY = std::numbers::pi_v<float> *0.3;
-        //properties.rotation.x += radiansX;
+        float radiansX = std::numbers::pi_v<float> *0.99;
         //properties.rotation.x += radiansX;
         //properties.rotation.y += radiansX;
-        //reRender = true;
 
         if (reRender || ((deltaPreviousDrawTime < AdaptiveRenderer::adaptiveThreshold) && (accuracyCounter > 0)))
         {
