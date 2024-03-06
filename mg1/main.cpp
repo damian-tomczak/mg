@@ -90,15 +90,15 @@ int main(int argc, char* argv[])
                         break;
                     }
 
-                    float dx = (mouseX - lastMouseX) * mouseSensitivity * deltaTime;
-                    float dy = -(mouseY - lastMouseY) * mouseSensitivity * deltaTime;
+                    float dx = (mouseX - lastMouseX) * mouseSensitivity;
+                    float dy = -(mouseY - lastMouseY) * mouseSensitivity;
 
                     InteractionType interactionType = menu.getInteractionType();
                     switch(interactionType)
                     {
                     case InteractionType::MOVE:
-                        properties.position.x += dx / 50.f;
-                        properties.position.y += dy / 50.f;
+                        properties.position.x += dx / 80.f;
+                        properties.position.y += dy / 80.f;
                         break;
                     case InteractionType::ROTATE:
                     {
@@ -140,14 +140,8 @@ int main(int argc, char* argv[])
         if (reRender)
         {
             previousProperties = properties;
-            accuracyCounter = 2;
+            accuracyCounter = startingAccuracy;
             deltaPreviousDrawTime = 0.f;
-
-            Uint32* pixels;
-            int pitch;
-            SDL_LockTexture(newTexture, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
-
-            SDL_UnlockTexture(newTexture);
         }
 
         float radiansX = std::numbers::pi_v<float> *0.99;
