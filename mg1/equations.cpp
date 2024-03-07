@@ -44,7 +44,7 @@ glm::mat4 calculateDPrim(glm::vec3 t, glm::vec3 s, glm::vec3 r, float a, float b
 
     glm::mat4 rotationMatrix = rotateX * rotateY;
 
-    glm::mat4 MMatrix = scaleMatrix * rotationMatrix * rotationMatrix * translationMatrix;
+    glm::mat4 MMatrix = scaleMatrix * rotationMatrix * translationMatrix;
 
     glm::mat4 MInverse = glm::inverse(MMatrix);
     glm::mat4 MInverseTranspose = glm::transpose(MInverse);
