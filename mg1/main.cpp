@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     bool isDragging = false;
     int lastMouseX, lastMouseY;
 
-    adaptiveRenderer.drawElipsoid(newTexture, std::pow(2, accuracyCounter), properties);
+    adaptiveRenderer.drawElipsoid(newTexture, static_cast<int>(std::pow(2, accuracyCounter)), properties);
     accuracyCounter--;
 
     Uint32 previousTime = SDL_GetTicks();
@@ -97,8 +97,8 @@ int main(int argc, char* argv[])
                     switch(interactionType)
                     {
                     case InteractionType::MOVE:
-                        properties.position.x += dx / 80.f;
-                        properties.position.y += dy / 80.f;
+                        properties.position.x += dx / 100.f;
+                        properties.position.y += dy / 100.f;
                         break;
                     case InteractionType::ROTATE:
                     {
@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
             deltaPreviousDrawTime = 0.f;
         }
 
-        float radiansX = std::numbers::pi_v<float> *0.99;
+        float radiansX = std::numbers::pi_v<float> * 0.99f;
         //properties.rotation.x += radiansX;
         //properties.rotation.y += radiansX;
 
@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
 
             SDL_SetRenderTarget(renderer, nullptr);
 
-            adaptiveRenderer.drawElipsoid(newTexture, std::pow(2, accuracyCounter), properties);
+            adaptiveRenderer.drawElipsoid(newTexture, static_cast<int>(std::pow(2, accuracyCounter)), properties);
 
             accuracyCounter--;
 

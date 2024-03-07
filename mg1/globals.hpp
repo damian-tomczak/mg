@@ -21,7 +21,7 @@ inline glm::vec3 viewPos = lightPos;
 
 inline int startingAccuracy = 4;
 inline int accuracyCounter = startingAccuracy;
-inline int startingAccuracyPow = std::pow(2, startingAccuracy);
+inline int startingAccuracyPow = static_cast<int>(std::pow(2, startingAccuracy));
 
 struct EllipsoidProperties
 {
