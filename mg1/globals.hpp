@@ -19,8 +19,9 @@ inline glm::vec3 specularColor = glm::vec3(1.f);
 
 inline glm::vec3 viewPos = lightPos;
 
-inline int startingAccuracy = 9;
+inline int startingAccuracy = 4;
 inline int accuracyCounter = startingAccuracy;
+inline int startingAccuracyPow = std::pow(2, startingAccuracy);
 
 struct EllipsoidProperties
 {

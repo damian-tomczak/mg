@@ -43,8 +43,6 @@ glm::vec4 AdaptiveRenderer::computeColor(int centerX, int centerY, const Ellipso
 
 void AdaptiveRenderer::drawElipsoid(SDL_Texture* texture, int accuracy, const EllipsoidProperties& properties)
 {
-    int startingAccuracyPow = std::pow(2, startingAccuracy);
-
     Uint32* pixels;
     int pitch;
 
@@ -71,13 +69,13 @@ void AdaptiveRenderer::drawElipsoid(SDL_Texture* texture, int accuracy, const El
                 rawColor = SDL_MapRGBA(format,
                     static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255),
                     static_cast<Uint8>(color.z * 255), static_cast<Uint8>(color.w * 255));
-            }
 
-            for (int fillY = y; fillY < y + accuracy && fillY < windowHeight; ++fillY)
-            {
-                for (int fillX = x; fillX < x + accuracy && fillX < windowWidth; ++fillX)
+                for (int fillY = y; fillY < y + accuracy && fillY < windowHeight; ++fillY)
                 {
-                    pixels[fillY * windowWidth + fillX] = rawColor;
+                    for (int fillX = x; fillX < x + accuracy && fillX < windowWidth; ++fillX)
+                    {
+                        pixels[fillY * windowWidth + fillX] = rawColor;
+                    }
                 }
             }
         }

@@ -73,7 +73,11 @@ inline void Menu::renderMenu(EllipsoidProperties& properties, float deltaTime)
         ImGui::Spacing();
 
         ImGui::SliderFloat("m", &properties.m, 0.1f, 10.0f);              isUIclicked |= ImGui::IsItemActive();
-        ImGui::SliderInt("accuracy", &startingAccuracy, 0, 10);           isUIclicked |= ImGui::IsItemActive();
+        if (ImGui::SliderInt("accuracy", &startingAccuracy, 0, 7))
+        {
+            startingAccuracyPow = std::pow(2, startingAccuracy);
+        }
+        isUIclicked |= ImGui::IsItemActive();
 
         ImGui::Spacing();
         ImGui::Separator();
